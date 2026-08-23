@@ -29,9 +29,9 @@ def main():
     print(f"Saving processed weekly dataset to: {output_path}")
     save_processed_dataset(weekly_df, output_path)
 
-    print("\n" + "=" * 65)
+    print("\n" + "=" * 70)
     print("PHASE 2A: WEEKLY DATASET VALIDATION PROFILE")
-    print("=" * 65)
+    print("=" * 70)
     print(f"First Week (Week Start):    {val_profile.first_week}")
     print(f"Last Week (Week Start):     {val_profile.last_week}")
     print(f"Total Weekly Observations:  {val_profile.num_weeks}")
@@ -45,29 +45,38 @@ def main():
     print(f"Missing Weeks Count:        {val_profile.missing_weeks_count}")
     print(f"Zero-Demand Weeks Count:    {val_profile.zero_demand_weeks_count}")
     print(f"Duplicate Weeks Count:      {val_profile.duplicate_weeks_count}")
+    print("\nPartial Boundary Weeks:")
+    for pw in val_profile.partial_weeks:
+        print(f"  * [{pw['week_start']} to {pw['week_end']}] {pw['reason']}")
+    print(f"\nPartial Week Recommendation:\n  {val_profile.partial_week_recommendation}")
 
     with open(reports_dir / "weekly_validation_profile.json", "w") as f:
         json.dump(val_profile.__dict__, f, indent=2)
 
-    print("\n" + "=" * 65)
+    print("\n" + "=" * 70)
     print("PHASE 2B: TIME-SERIES STATISTICAL EXPLORATION")
-    print("=" * 65)
+    print("=" * 70)
     ts_report = explore_weekly_time_series(weekly_df)
 
-    print("1. Trend Analysis:")
+    print("1. Empirical Trend Analysis (Descriptive OLS):")
     print(f"   - Linear Trend Slope:     +{ts_report.trend_analysis['linear_slope_per_week']:.4f} units / week")
     print(f"   - Direction:              {ts_report.trend_analysis['direction']}")
     print(f"   - Total Trend Expansion:  +{ts_report.trend_analysis['total_estimated_trend_change']:.2f} units over horizon")
+    print(f"   - Methodological Note:    {ts_report.trend_analysis['methodological_note']}")
 
     print("\n2. Annual Demand Summary:")
     for yr, data in ts_report.annual_patterns.items():
         growth_str = f" (YoY: {data['yoy_demand_growth_pct']:+.2f}%)" if data['yoy_demand_growth_pct'] is not None else ""
         print(f"   - Year {yr}: Total = {data['total_demand']:,} units, Mean = {data['mean_weekly_demand']:.1f}/wk, Weeks = {data['num_weeks']}{growth_str}")
 
-    print("\n3. Autocorrelation & Seasonality Diagnostics:")
-    print(f"   - Lag 1 Autocorrelation (r_1):   {ts_report.seasonality_evidence['lag_1_autocorrelation']:.4f}")
-    print(f"   - Lag 52 Autocorrelation (r_52): {ts_report.seasonality_evidence['lag_52_autocorrelation']:.4f}")
-    print("   - Top Positive ACF Lags:         " + ", ".join([f"Lag {x['lag']} (r={x['autocorrelation']:.3f})" for x in ts_report.seasonality_evidence['top_autocorrelation_lags']]))
+    print("\n3. Autocorrelation & Seasonality Evidence (with 95% CI):")
+    print(f"   - White Noise 95% Bound:         +/-{ts_report.seasonality_evidence['white_noise_95_pct_threshold']:.4f}")
+    print(f"   - Lag 1 Autocorrelation (r_1):   {ts_report.seasonality_evidence['lag_1_autocorrelation']:.4f} (95% CI: {ts_report.seasonality_evidence['lag_1_95pct_ci']})")
+    print(f"   - Lag 52 Autocorrelation (r_52): {ts_report.seasonality_evidence['lag_52_autocorrelation']:.4f} (95% CI: {ts_report.seasonality_evidence['lag_52_95pct_ci']})")
+    print(f"   - Exceeds White-Noise Null:      {ts_report.seasonality_evidence['lag_52_exceeds_white_noise_null']}")
+    print("   - Top Positive ACF Lags:")
+    for x in ts_report.seasonality_evidence['top_autocorrelation_lags']:
+        print(f"     * Lag {x['lag']:>2}: r = {x['autocorrelation']:.4f} (95% CI [{x['ci_lower']:.4f}, {x['ci_upper']:.4f}]) | Exceeds Null: {x['exceeds_white_noise_null']}")
 
     print("\n4. Volatility & Rolling Range:")
     print(f"   - Coefficient of Variation (CV): {ts_report.volatility_metrics['coefficient_of_variation']:.4f}")
@@ -82,10 +91,14 @@ def main():
     for w in ts_report.extreme_weeks['low_weeks']:
         print(f"     * {w['week']}: {w['quantity']} units")
 
-    print("\n6. Stationarity Diagnostics:")
-    print(f"   - ADF Test Statistic:  {ts_report.stationarity_tests['adf_test']['test_statistic']:.4f} (p-value: {ts_report.stationarity_tests['adf_test']['p_value']})")
-    print(f"   - KPSS Test Statistic: {ts_report.stationarity_tests['kpss_test']['test_statistic']:.4f} (p-value: {ts_report.stationarity_tests['kpss_test']['p_value']})")
-    print(f"   - Interpretation:      {ts_report.stationarity_tests['joint_interpretation']}")
+    print("\n6. Stationarity Diagnostics (ADF, KPSS Level, KPSS Trend):")
+    adf = ts_report.stationarity_tests['adf_test']
+    kpss_c = ts_report.stationarity_tests['kpss_level_test']
+    kpss_ct = ts_report.stationarity_tests['kpss_trend_test']
+    print(f"   - ADF Test (Unit Root):    Statistic = {adf['test_statistic']:.4f}, p-value = {adf['p_value']} | Rejects H0 (Unit Root): {adf['rejects_h0_at_5pct']}")
+    print(f"   - KPSS Level (c):          Statistic = {kpss_c['test_statistic']:.4f}, p-value = {kpss_c['p_value']} (5% crit: {kpss_c['critical_values']['5%']}) | Rejects H0 (Level-Stat): {kpss_c['rejects_h0_at_5pct']}")
+    print(f"   - KPSS Trend (ct):         Statistic = {kpss_ct['test_statistic']:.4f}, p-value = {kpss_ct['p_value']} (5% crit: {kpss_ct['critical_values']['5%']}) | Rejects H0 (Trend-Stat): {kpss_ct['rejects_h0_at_5pct']}")
+    print(f"\n   Joint Diagnostic Assessment:\n   {ts_report.stationarity_tests['joint_diagnostic_assessment']}")
 
     print("\nKey Analytical Findings:")
     for finding in ts_report.key_findings:
@@ -94,7 +107,7 @@ def main():
     with open(reports_dir / "time_series_exploration.json", "w") as f:
         json.dump(ts_report.__dict__, f, indent=2)
 
-    print(f"\nAll reports generated successfully in {reports_dir}")
+    print(f"\nAll reports updated successfully in {reports_dir}")
 
 
 if __name__ == "__main__":

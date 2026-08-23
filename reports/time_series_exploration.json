@@ -49,38 +49,63 @@
   "trend_analysis": {
     "linear_slope_per_week": 0.8593,
     "linear_intercept": 91.84,
-    "direction": "Upward",
+    "direction": "Observed upward trend",
     "start_estimated_trend": 91.84,
     "end_estimated_trend": 270.58,
-    "total_estimated_trend_change": 178.74
+    "total_estimated_trend_change": 178.74,
+    "methodological_note": "The OLS slope is an empirical descriptive summary of the observed historical trend, not proof of a deterministic data-generating process."
   },
   "seasonality_evidence": {
     "evaluated_max_lags": 52,
+    "white_noise_95_pct_threshold": 0.1356,
     "lag_1_autocorrelation": 0.6974,
+    "lag_1_95pct_ci": [
+      0.5618,
+      0.833
+    ],
     "lag_52_autocorrelation": 0.4964,
+    "lag_52_95pct_ci": [
+      0.1793,
+      0.8136
+    ],
+    "lag_52_exceeds_white_noise_null": true,
     "top_autocorrelation_lags": [
       {
         "lag": 1,
-        "autocorrelation": 0.6974
+        "autocorrelation": 0.6974,
+        "ci_lower": 0.5618,
+        "ci_upper": 0.833,
+        "exceeds_white_noise_null": true
       },
       {
         "lag": 2,
-        "autocorrelation": 0.6402
+        "autocorrelation": 0.6402,
+        "ci_lower": 0.4498,
+        "ci_upper": 0.8306,
+        "exceeds_white_noise_null": true
       },
       {
         "lag": 52,
-        "autocorrelation": 0.4964
+        "autocorrelation": 0.4964,
+        "ci_lower": 0.1793,
+        "ci_upper": 0.8136,
+        "exceeds_white_noise_null": true
       },
       {
         "lag": 3,
-        "autocorrelation": 0.4835
+        "autocorrelation": 0.4835,
+        "ci_lower": 0.2569,
+        "ci_upper": 0.71,
+        "exceeds_white_noise_null": true
       },
       {
         "lag": 51,
-        "autocorrelation": 0.4534
+        "autocorrelation": 0.4534,
+        "ci_lower": 0.1484,
+        "ci_upper": 0.7584,
+        "exceeds_white_noise_null": true
       }
     ],
-    "has_annual_seasonality_signal": true,
     "monthly_demand_distribution": {
       "1": 82.41,
       "2": 75.53,
@@ -94,7 +119,8 @@
       "10": 198.72,
       "11": 349.41,
       "12": 257.72
-    }
+    },
+    "interpretation_notes": "The observed lag-52 autocorrelation is r_52 = 0.4964 with 95% CI [0.1793, 0.8136], which exceeds the white-noise null threshold (+/-0.1356). This provides empirical evidence of annual cyclicality. Higher weekly volumes are observed in Q4 (Sep-Dec), but causal drivers cannot be asserted from transactional totals alone."
   },
   "rolling_statistics": {
     "rolling_4w_mean": {
@@ -191,6 +217,7 @@
   },
   "stationarity_tests": {
     "adf_test": {
+      "hypothesis": "H0: Unit root present (non-stationary); H1: Stationary/trend-stationary",
       "test_statistic": -4.1662,
       "p_value": 0.000751,
       "used_lag": 2,
@@ -199,9 +226,11 @@
         "5%": -2.8757,
         "10%": -2.5743
       },
-      "is_stationary_at_5pct": true
+      "rejects_h0_at_5pct": true
     },
-    "kpss_test": {
+    "kpss_level_test": {
+      "regression_spec": "c",
+      "hypothesis": "H0: Series is level-stationary around a constant; H1: Non-stationary / unit root / trending",
       "test_statistic": 1.0552,
       "p_value": 0.01,
       "used_lags": 8,
@@ -211,15 +240,29 @@
         "2.5%": 0.574,
         "1%": 0.739
       },
-      "is_stationary_at_5pct": false
+      "rejects_h0_at_5pct": true
     },
-    "joint_interpretation": "Trend-Stationary / Non-Stationary mean: ADF rejects unit root, but KPSS rejects stationarity around a constant mean due to deterministic positive trend and strong annual cyclicality."
+    "kpss_trend_test": {
+      "regression_spec": "ct",
+      "hypothesis": "H0: Series is trend-stationary around a deterministic linear trend; H1: Non-stationary / unit root",
+      "test_statistic": 0.0875,
+      "p_value": 0.1,
+      "used_lags": 8,
+      "critical_values": {
+        "10%": 0.119,
+        "5%": 0.146,
+        "2.5%": 0.176,
+        "1%": 0.216
+      },
+      "rejects_h0_at_5pct": false
+    },
+    "joint_diagnostic_assessment": "Evidence is consistent with an observed upward trend, but stationarity diagnostics require consideration of deterministic trend and seasonality. Specifically: 1. The ADF test rejects the unit-root null (p = 0.0008). 2. The KPSS level test (c) rejects level-stationarity (p <= 0.01), indicating the mean is not constant over time. 3. The KPSS trend test (ct) fails to reject trend-stationarity (statistic 0.0875 vs 5% critical value 0.146, p >= 0.10). Limitations: These standard tests do not formally model the observed 52-week seasonal amplitude changes or evolving volatility. Therefore, forecasting models should explicitly account for trend and annual seasonality (e.g. via seasonal differencing, structural decomposition, or seasonal time-series models) rather than assuming unconditional stationarity."
   },
   "key_findings": [
-    "The weekly demand exhibits a measurable upward trend with an empirical slope of +0.86 units/week.",
-    "Substantial annual growth: Annual weekly mean grew from 146.9 units/week in 2014 to 238.8 units/week in 2017 (+62.6% total expansion).",
-    "Significant annual lag autocorrelation: Autocorrelation at lag 52 is r_52 = 0.4964, indicating recurring 52-week annual cycle patterns.",
+    "The weekly demand exhibits an observed upward trend with an empirical OLS slope of +0.86 units/week.",
+    "Annual expansion: Annual weekly mean grew from 146.9 units/week in 2014 to 238.8 units/week in 2017 (+62.6% total expansion across complete years).",
+    "Autocorrelation & cyclical evidence: Autocorrelation at lag 1 is r_1 = 0.6974 (95% CI [0.5618, 0.833]) and lag 52 is r_52 = 0.4964 (95% CI [0.1793, 0.8136]), both exceeding the white-noise null threshold (+/-0.1356).",
     "Seasonal concentration: 11 of the 12 unusually high demand weeks (> 386.1 units) occurred in the September\u2013December window.",
-    "Overall volatility is moderate with a Coefficient of Variation (CV) of 0.5654 (std = 102.5, mean = 181.2)."
+    "Stationarity diagnosis: ADF rejects unit root (p = 0.0008) while KPSS level rejects constant mean (p <= 0.01) and KPSS trend fails to reject trend-stationarity (p >= 0.10). Stationarity diagnostics require consideration of deterministic trend and seasonality."
   ]
 }

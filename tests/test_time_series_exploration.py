@@ -29,24 +29,38 @@ def test_explore_weekly_time_series_structure(weekly_data: pd.DataFrame):
     assert report.summary_stats["min"] == 13.0
     assert report.summary_stats["max"] == 564.0
 
-    # Trend
+    # Trend (Observed upward trend language)
     assert report.trend_analysis["linear_slope_per_week"] > 0
-    assert report.trend_analysis["direction"] == "Upward"
+    assert report.trend_analysis["direction"] == "Observed upward trend"
+    assert "methodological_note" in report.trend_analysis
 
-    # Seasonality / Autocorrelation
+    # Seasonality / Autocorrelation with Confidence Intervals
     assert report.seasonality_evidence["lag_1_autocorrelation"] > 0.5
+    assert len(report.seasonality_evidence["lag_1_95pct_ci"]) == 2
     assert report.seasonality_evidence["lag_52_autocorrelation"] > 0.4
-    assert report.seasonality_evidence["has_annual_seasonality_signal"] is True
+    assert len(report.seasonality_evidence["lag_52_95pct_ci"]) == 2
+    assert report.seasonality_evidence["lag_52_exceeds_white_noise_null"] is True
+    assert report.seasonality_evidence["white_noise_95_pct_threshold"] == pytest.approx(0.1356, rel=1e-2)
 
     # Annual YoY
     assert "2014" in report.annual_patterns
     assert "2017" in report.annual_patterns
     assert report.annual_patterns["2017"]["total_demand"] > report.annual_patterns["2014"]["total_demand"]
 
-    # Stationarity diagnostics
+    # Stationarity diagnostics (ADF, KPSS Level, KPSS Trend)
     assert "adf_test" in report.stationarity_tests
-    assert "kpss_test" in report.stationarity_tests
-    assert report.stationarity_tests["adf_test"]["is_stationary_at_5pct"] is True
+    assert "kpss_level_test" in report.stationarity_tests
+    assert "kpss_trend_test" in report.stationarity_tests
+
+    # ADF rejects unit root
+    assert report.stationarity_tests["adf_test"]["rejects_h0_at_5pct"] is True
+    # KPSS level (c) rejects level stationarity
+    assert report.stationarity_tests["kpss_level_test"]["rejects_h0_at_5pct"] is True
+    # KPSS trend (ct) fails to reject trend stationarity
+    assert report.stationarity_tests["kpss_trend_test"]["rejects_h0_at_5pct"] is False
+
+    # Joint assessment caution
+    assert "deterministic trend and seasonality" in report.stationarity_tests["joint_diagnostic_assessment"]
 
 
 def test_explore_weekly_time_series_insufficient_observations():

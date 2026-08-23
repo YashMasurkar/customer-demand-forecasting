@@ -15,6 +15,16 @@
   "zero_demand_weeks_count": 0,
   "zero_demand_weeks": [],
   "duplicate_weeks_count": 0,
+  "partial_weeks": [
+    {
+      "week_start": "2013-12-30",
+      "week_end": "2014-01-05",
+      "boundary": "start",
+      "days_covered": 3,
+      "reason": "Initial boundary week: Raw data starts on 2014-01-03 (Friday), covering only 3/7 days."
+    }
+  ],
+  "partial_week_recommendation": "Exclude initial partial week 2013-12-30 from model training/validation splits. Rationale: It represents only 3 calendar days (Friday Jan 3 to Sunday Jan 5, 2014) rather than a full 7-day business week, artificially distorting lag features (e.g. lag-1 demand) and rolling baseline calculations.",
   "additional_metrics": {
     "total_sales": 2297200.88,
     "mean_weekly_sales": 10991.39,

@@ -31,6 +31,8 @@ class WeeklyValidationProfile:
     zero_demand_weeks_count: int
     zero_demand_weeks: List[str]
     duplicate_weeks_count: int
+    partial_weeks: List[Dict[str, Any]] = field(default_factory=list)
+    partial_week_recommendation: str = ""
     additional_metrics: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -142,8 +144,40 @@ def aggregate_weekly_demand(
     weekly_continuous["year"] = weekly_continuous["week_start"].dt.year
     weekly_continuous["week_of_year"] = weekly_continuous["week_start"].dt.isocalendar().week.astype(int)
 
+    # Partial boundary week detection:
+    # Identify whether boundary weeks have full calendar day coverage from the raw dataset
+    min_raw_date = parsed_dates.min()
+    max_raw_date = parsed_dates.max()
+
+    # A week is partial at the start if min raw date is after the week start date
+    # A week is partial at the end if max raw date is before the week end date and is truncated
+    partial_weeks_info: List[Dict[str, Any]] = []
+    is_partial_list: List[bool] = []
+
+    for idx, row in weekly_continuous.iterrows():
+        w_start = row["week_start"]
+        w_end = row["week_end"]
+        is_partial = False
+        reason = "Complete 7-day calendar week"
+
+        if idx == 0 and min_raw_date > w_start:
+            days_covered = (w_end - min_raw_date).days + 1
+            is_partial = True
+            reason = f"Initial boundary week: Raw data starts on {min_raw_date.strftime('%Y-%m-%d')} ({min_raw_date.day_name()}), covering only {days_covered}/7 days."
+            partial_weeks_info.append({
+                "week_start": w_start.strftime("%Y-%m-%d"),
+                "week_end": w_end.strftime("%Y-%m-%d"),
+                "boundary": "start",
+                "days_covered": days_covered,
+                "reason": reason
+            })
+        
+        is_partial_list.append(is_partial)
+
+    weekly_continuous["is_partial_week"] = is_partial_list
+
     # Reorder columns with week identifiers and primary target upfront
-    col_order = ["week_start", "week_end", "year", "week_of_year", "quantity"]
+    col_order = ["week_start", "week_end", "year", "week_of_year", "is_partial_week", "quantity"]
     remaining_cols = [c for c in weekly_continuous.columns if c not in col_order]
     weekly_continuous = weekly_continuous[col_order + remaining_cols]
 
@@ -158,6 +192,13 @@ def aggregate_weekly_demand(
 
     # Duplicate weeks check
     duplicate_weeks_count = int(weekly_continuous["week_start"].duplicated().sum())
+
+    recommendation = (
+        "Exclude initial partial week 2013-12-30 from model training/validation splits. "
+        "Rationale: It represents only 3 calendar days (Friday Jan 3 to Sunday Jan 5, 2014) "
+        "rather than a full 7-day business week, artificially distorting lag features (e.g. lag-1 demand) "
+        "and rolling baseline calculations."
+    )
 
     q_series = weekly_continuous["quantity"]
     profile = WeeklyValidationProfile(
@@ -177,6 +218,8 @@ def aggregate_weekly_demand(
         zero_demand_weeks_count=len(zero_demand_weeks_list),
         zero_demand_weeks=zero_demand_weeks_list,
         duplicate_weeks_count=duplicate_weeks_count,
+        partial_weeks=partial_weeks_info,
+        partial_week_recommendation=recommendation,
         additional_metrics={
             "total_sales": round(float(weekly_continuous["sales"].sum()), 2) if "sales" in weekly_continuous else None,
             "mean_weekly_sales": round(float(weekly_continuous["sales"].mean()), 2) if "sales" in weekly_continuous else None,

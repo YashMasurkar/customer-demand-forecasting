@@ -81,6 +81,14 @@ def test_aggregate_weekly_demand_dimensions(raw_df: pd.DataFrame):
     assert profile.zero_demand_weeks_count == 0
     assert profile.duplicate_weeks_count == 0
 
+    # Partial week detection check
+    assert "is_partial_week" in weekly_df.columns
+    assert weekly_df.loc[0, "is_partial_week"] == True
+    assert weekly_df.loc[1:, "is_partial_week"].sum() == 0  # Only week 0 is partial
+    assert len(profile.partial_weeks) == 1
+    assert profile.partial_weeks[0]["week_start"] == "2013-12-30"
+    assert "Exclude initial partial week" in profile.partial_week_recommendation
+
     assert "week_start" in weekly_df.columns
     assert "week_end" in weekly_df.columns
     assert "quantity" in weekly_df.columns
