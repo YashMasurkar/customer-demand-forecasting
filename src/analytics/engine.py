@@ -21,7 +21,9 @@ from src.analytics.schemas import (
     PeakTroughWeek,
     ForwardProductionForecast,
     ModelEvaluationMetadata,
-    BusinessAnalyticsContext
+    BusinessAnalyticsContext,
+    FilteredPerformanceKPIs,
+    FilteredPerformanceResponse
 )
 from src.models.holt_winters import HoltWintersForecaster
 
@@ -565,3 +567,128 @@ def build_business_analytics_context(
         model_evaluation=model_evaluation,
         forward_forecast=forward_forecast
     )
+
+
+def calculate_filtered_performance_analytics(
+    raw_df: pd.DataFrame,
+    year: Optional[str] = "All",
+    category: Optional[str] = "All",
+    region: Optional[str] = "All"
+) -> FilteredPerformanceResponse:
+    """Calculate deterministic business KPIs and category/regional breakdowns for a filtered historical slice.
+
+    Args:
+        raw_df: Raw Superstore transaction DataFrame.
+        year: Year filter ('All', '2014', '2015', '2016', '2017').
+        category: Category filter ('All', 'Furniture', 'Office Supplies', 'Technology').
+        region: Region filter ('All', 'Central', 'East', 'South', 'West').
+
+    Returns:
+        FilteredPerformanceResponse Pydantic model.
+    """
+    df = raw_df.copy()
+
+    # Pre-parse Order Year if not present
+    if "Order_Year" not in df.columns:
+        df["Order_Year"] = pd.to_datetime(df["Order Date"]).dt.year
+
+    # 1. Apply Year Filter
+    active_year = str(year).strip() if year else "All"
+    if active_year not in ["All", "all", "", "None", "none"]:
+        try:
+            yr_int = int(active_year)
+            df = df[df["Order_Year"] == yr_int]
+        except ValueError:
+            pass
+
+    # 2. Apply Category Filter
+    active_cat = str(category).strip() if category else "All"
+    if active_cat not in ["All", "all", "", "None", "none"]:
+        df = df[df["Category"].str.lower() == active_cat.lower()]
+
+    # 3. Apply Region Filter
+    active_reg = str(region).strip() if region else "All"
+    if active_reg not in ["All", "all", "", "None", "none"]:
+        df = df[df["Region"].str.lower() == active_reg.lower()]
+
+    # 4. Compute Filtered KPIs
+    total_qty = int(df["Quantity"].sum()) if len(df) > 0 else 0
+    total_sales = round(float(df["Sales"].sum()), 2) if len(df) > 0 else 0.0
+    total_profit = round(float(df["Profit"].sum()), 2) if len(df) > 0 else 0.0
+    margin_pct = round((total_profit / total_sales) * 100.0, 2) if total_sales > 0 else 0.0
+    total_orders = int(df["Order ID"].nunique()) if len(df) > 0 else 0
+    total_tx = int(len(df))
+    aov = round(total_sales / total_orders, 2) if total_orders > 0 else 0.0
+
+    kpis = FilteredPerformanceKPIs(
+        total_quantity=total_qty,
+        total_sales=total_sales,
+        total_profit=total_profit,
+        profit_margin_pct=margin_pct,
+        total_orders=total_orders,
+        total_transactions=total_tx,
+        average_order_value=aov
+    )
+
+    # 5. Compute Category Breakdown for Filtered Slice
+    categories_master = ["Furniture", "Office Supplies", "Technology"]
+    cat_metrics: List[DimensionMetric] = []
+    for c_name in categories_master:
+        c_df = df[df["Category"] == c_name]
+        c_qty = int(c_df["Quantity"].sum()) if len(c_df) > 0 else 0
+        c_sales = round(float(c_df["Sales"].sum()), 2) if len(c_df) > 0 else 0.0
+        c_profit = round(float(c_df["Profit"].sum()), 2) if len(c_df) > 0 else 0.0
+        c_orders = int(c_df["Order ID"].nunique()) if len(c_df) > 0 else 0
+        c_margin = round((c_profit / c_sales) * 100.0, 2) if c_sales > 0 else 0.0
+        c_qty_share = round((c_qty / total_qty) * 100.0, 2) if total_qty > 0 else 0.0
+        c_sales_share = round((c_sales / total_sales) * 100.0, 2) if total_sales > 0 else 0.0
+
+        cat_metrics.append(DimensionMetric(
+            dimension_type="Category",
+            dimension_value=c_name,
+            quantity=c_qty,
+            sales=c_sales,
+            profit=c_profit,
+            orders=c_orders,
+            profit_margin_pct=c_margin,
+            quantity_share_pct=c_qty_share,
+            sales_share_pct=c_sales_share
+        ))
+
+    # 6. Compute Regional Breakdown for Filtered Slice
+    regions_master = ["Central", "East", "South", "West"]
+    reg_metrics: List[DimensionMetric] = []
+    for r_name in regions_master:
+        r_df = df[df["Region"] == r_name]
+        r_qty = int(r_df["Quantity"].sum()) if len(r_df) > 0 else 0
+        r_sales = round(float(r_df["Sales"].sum()), 2) if len(r_df) > 0 else 0.0
+        r_profit = round(float(r_df["Profit"].sum()), 2) if len(r_df) > 0 else 0.0
+        r_orders = int(r_df["Order ID"].nunique()) if len(r_df) > 0 else 0
+        r_margin = round((r_profit / r_sales) * 100.0, 2) if r_sales > 0 else 0.0
+        r_qty_share = round((r_qty / total_qty) * 100.0, 2) if total_qty > 0 else 0.0
+        r_sales_share = round((r_sales / total_sales) * 100.0, 2) if total_sales > 0 else 0.0
+
+        reg_metrics.append(DimensionMetric(
+            dimension_type="Region",
+            dimension_value=r_name,
+            quantity=r_qty,
+            sales=r_sales,
+            profit=r_profit,
+            orders=r_orders,
+            profit_margin_pct=r_margin,
+            quantity_share_pct=r_qty_share,
+            sales_share_pct=r_sales_share
+        ))
+
+    return FilteredPerformanceResponse(
+        active_filters={
+            "year": active_year,
+            "category": active_cat,
+            "region": active_reg
+        },
+        filtered_kpis=kpis,
+        category_summary=cat_metrics,
+        regional_summary=reg_metrics,
+        record_count=total_tx
+    )
+

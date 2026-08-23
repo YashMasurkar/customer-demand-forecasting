@@ -58,23 +58,23 @@ class DimensionMetric(BaseModel):
 class TopBottomPerformers(BaseModel):
     """Ranked ranking lists for business dimensions based on empirical evidence."""
     top_categories_by_quantity: List[DimensionMetric] = Field(description="Top categories ranked by volume.")
-    top_categories_by_sales: List[DimensionMetric] = Field(description="Top categories ranked by sales revenue.")
-    top_categories_by_profit: List[DimensionMetric] = Field(description="Top categories ranked by net profit.")
-    bottom_categories_by_profit: List[DimensionMetric] = Field(description="Categories ranked by lowest net profit.")
+    top_categories_by_sales: List[DimensionMetric] = Field(description="Top categories ranked by sales.")
+    top_categories_by_profit: List[DimensionMetric] = Field(description="Top categories ranked by profit.")
+    bottom_categories_by_profit: List[DimensionMetric] = Field(description="Lowest profit categories.")
     top_sub_categories_by_quantity: List[DimensionMetric] = Field(description="Top 5 sub-categories by volume.")
-    bottom_sub_categories_by_profit: List[DimensionMetric] = Field(description="Lowest 5 sub-categories by profit.")
-    regional_rankings: List[DimensionMetric] = Field(description="Regions ranked by total quantity.")
+    bottom_sub_categories_by_profit: List[DimensionMetric] = Field(description="Lowest profit sub-categories.")
+    regional_rankings: List[DimensionMetric] = Field(description="Regional breakdown ranked by volume.")
 
 
 class DemandAnomaly(BaseModel):
-    """Statistically identified unusual demand observation."""
-    week_start: str = Field(description="Monday week start date of the anomaly.")
-    actual_quantity: float = Field(description="Observed weekly demand units.")
-    baseline_mean: float = Field(description="Rolling baseline mean demand.")
-    baseline_std: float = Field(description="Rolling baseline demand standard deviation.")
-    z_score: float = Field(description="Standardized deviation score: (actual - mean) / std.")
-    anomaly_direction: str = Field(description="'high' or 'low' demand anomaly.")
-    description: str = Field(description="Objective, non-causal statistical description.")
+    """Documented statistical demand anomaly."""
+    week_start: str = Field(description="Monday week start date.")
+    actual_quantity: float = Field(description="Observed weekly demand.")
+    baseline_mean: float = Field(description="Rolling baseline mean.")
+    baseline_std: float = Field(description="Rolling baseline standard deviation.")
+    z_score: float = Field(description="Standardized z-score.")
+    anomaly_direction: str = Field(description="high or low.")
+    description: str = Field(description="Descriptive non-causal explanation.")
 
 
 class PeakTroughWeek(BaseModel):
@@ -139,3 +139,23 @@ class BusinessAnalyticsContext(BaseModel):
     anomalies: List[DemandAnomaly]
     model_evaluation: ModelEvaluationMetadata = Field(description="Historical holdout evaluation benchmark on 2017.")
     forward_forecast: ForwardProductionForecast = Field(description="Genuine forward production forecast for 2018+.")
+
+
+class FilteredPerformanceKPIs(BaseModel):
+    """Calculated KPI metrics for a dynamically filtered slice of historical data."""
+    total_quantity: int = Field(description="Total units sold in the filtered slice.")
+    total_sales: float = Field(description="Total monetary revenue in the filtered slice ($).")
+    total_profit: float = Field(description="Total net profit in the filtered slice ($).")
+    profit_margin_pct: float = Field(description="Profit margin percentage in the filtered slice.")
+    total_orders: int = Field(description="Distinct order count in the filtered slice.")
+    total_transactions: int = Field(description="Total transaction row count in the filtered slice.")
+    average_order_value: float = Field(description="Average sales per order in the filtered slice ($).")
+
+
+class FilteredPerformanceResponse(BaseModel):
+    """Structured response for dynamic historical performance filtering."""
+    active_filters: Dict[str, str] = Field(description="Selected filter values for Year, Category, Region.")
+    filtered_kpis: FilteredPerformanceKPIs = Field(description="Summary KPIs for the filtered slice.")
+    category_summary: List[DimensionMetric] = Field(description="Category breakdown for the filtered slice.")
+    regional_summary: List[DimensionMetric] = Field(description="Regional breakdown for the filtered slice.")
+    record_count: int = Field(description="Number of matching raw transaction rows.")

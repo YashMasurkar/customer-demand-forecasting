@@ -15,7 +15,8 @@ from src.analytics.schemas import (
     DemandAnomaly,
     ForwardProductionForecast,
     ModelEvaluationMetadata,
-    BusinessAnalyticsContext
+    BusinessAnalyticsContext,
+    FilteredPerformanceResponse
 )
 from src.analytics.engine import (
     calculate_safe_growth,
@@ -25,7 +26,8 @@ from src.analytics.engine import (
     identify_top_bottom_performers,
     detect_demand_anomalies,
     generate_forward_production_forecast,
-    build_business_analytics_context
+    build_business_analytics_context,
+    calculate_filtered_performance_analytics
 )
 
 
@@ -219,3 +221,43 @@ def test_build_business_analytics_context_json_serialization():
     assert "forward_forecast" in reloaded_dict
     assert reloaded_dict["model_evaluation"]["test_mae"] == pytest.approx(39.02, abs=0.5)
     assert reloaded_dict["forward_forecast"]["forecast_start_date"] == "2018-01-01"
+
+
+def test_calculate_filtered_performance_analytics_various_combinations(sample_raw_and_weekly_dfs):
+    """Verify calculate_filtered_performance_analytics produces exact deterministic results across filter combinations."""
+    raw_df, _ = sample_raw_and_weekly_dfs
+
+    # 1. Unfiltered / All
+    res_all = calculate_filtered_performance_analytics(raw_df, year="All", category="All", region="All")
+    assert isinstance(res_all, FilteredPerformanceResponse)
+    assert res_all.record_count == 9994
+    assert res_all.filtered_kpis.total_quantity == 37873
+    assert res_all.filtered_kpis.total_sales == pytest.approx(2297200.86, abs=1.0)
+    assert res_all.filtered_kpis.total_profit == pytest.approx(286397.02, abs=1.0)
+    assert len(res_all.category_summary) == 3
+    assert len(res_all.regional_summary) == 4
+
+    # 2. Year = 2017
+    res_2017 = calculate_filtered_performance_analytics(raw_df, year="2017")
+    assert res_2017.record_count == 3312
+    assert res_2017.filtered_kpis.total_quantity == 12476
+
+    # 3. Category = Technology
+    res_tech = calculate_filtered_performance_analytics(raw_df, category="Technology")
+    assert res_tech.filtered_kpis.total_quantity == 6939
+    assert res_tech.filtered_kpis.total_sales == pytest.approx(836154.03, abs=1.0)
+
+    # 4. Region = West
+    res_west = calculate_filtered_performance_analytics(raw_df, region="West")
+    assert res_west.filtered_kpis.total_quantity == 12266
+    assert res_west.filtered_kpis.total_sales == pytest.approx(725457.82, abs=1.0)
+
+    # 5. Combined: Year=2017 + Category=Technology + Region=West
+    res_comb = calculate_filtered_performance_analytics(raw_df, year="2017", category="Technology", region="West")
+    assert res_comb.record_count == 213
+    assert res_comb.filtered_kpis.total_quantity == 851
+    assert res_comb.filtered_kpis.total_sales == pytest.approx(95959.15, abs=1.0)
+    assert res_comb.filtered_kpis.total_profit == pytest.approx(18983.80, abs=1.0)
+    assert res_comb.filtered_kpis.total_orders == 177
+    assert res_comb.filtered_kpis.profit_margin_pct == pytest.approx(19.78, abs=0.1)
+

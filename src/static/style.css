@@ -760,6 +760,132 @@ body {
     margin-bottom: 18px;
 }
 
+/* Interactive Performance Filter Bar */
+.perf-filter-bar {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    box-shadow: var(--shadow-xs);
+}
+
+.filter-controls-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.filter-select {
+    background: var(--bg-card-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+.filter-select:focus {
+    border-color: var(--brand-indigo);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+    background: #ffffff;
+}
+
+.btn-reset-filter {
+    background: var(--bg-card-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.btn-reset-filter:hover {
+    background: #f1f5f9;
+    color: var(--text-main);
+    border-color: #cbd5e1;
+}
+
+.filter-status-badge {
+    font-size: 0.82rem;
+    color: var(--text-body);
+    background: var(--bg-card-subtle);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+}
+
+/* Dynamic Filtered Performance KPI Strip */
+.perf-kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.perf-kpi-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-xs);
+}
+
+.p-kpi-label {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+}
+
+.p-kpi-value {
+    font-size: 1.30rem;
+    font-weight: 800;
+    color: var(--brand-indigo);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 2px 0;
+}
+
+.p-kpi-sub {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+}
+
 /* 2-Column Performance Grid */
 .performance-grid {
     display: grid;
@@ -1207,6 +1333,9 @@ body {
     .forecast-kpi-grid {
         grid-template-columns: 1fr 1fr;
     }
+    .perf-kpi-strip {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 @media (max-width: 768px) {
@@ -1222,6 +1351,23 @@ body {
     }
     .forecast-kpi-grid {
         grid-template-columns: 1fr;
+    }
+    .perf-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filter-controls-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filter-group {
+        justify-content: space-between;
+    }
+    .filter-select {
+        flex: 1;
+    }
+    .perf-kpi-strip {
+        grid-template-columns: 1fr 1fr;
     }
     .chart-wrapper {
         height: 300px;

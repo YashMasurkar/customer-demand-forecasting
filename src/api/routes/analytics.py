@@ -92,3 +92,65 @@ def get_dashboard_summary() -> DashboardSummaryResponse:
         },
         business_insights=insights
     )
+
+
+# In-memory cache for raw DataFrame to ensure sub-millisecond filtered queries
+_CACHED_RAW_DF = None
+
+
+def get_cached_raw_df():
+    global _CACHED_RAW_DF
+    if _CACHED_RAW_DF is None:
+        import pandas as pd
+        _CACHED_RAW_DF = pd.read_csv("data/raw/Sample_Superstore.csv", encoding="windows-1252")
+        _CACHED_RAW_DF["Order_Year"] = pd.to_datetime(_CACHED_RAW_DF["Order Date"]).dt.year
+    return _CACHED_RAW_DF
+
+
+ALLOWED_YEARS = {"all", "2014", "2015", "2016", "2017"}
+ALLOWED_CATEGORIES = {"all", "furniture", "office supplies", "technology"}
+ALLOWED_REGIONS = {"all", "central", "east", "south", "west"}
+
+
+from src.analytics.schemas import FilteredPerformanceResponse
+from src.analytics.engine import calculate_filtered_performance_analytics
+from fastapi import Query
+
+
+@router.get("/performance", response_model=FilteredPerformanceResponse)
+def get_filtered_performance(
+    year: str = Query("All", description="Year filter: All, 2014, 2015, 2016, 2017"),
+    category: str = Query("All", description="Category filter: All, Furniture, Office Supplies, Technology"),
+    region: str = Query("All", description="Region filter: All, Central, East, South, West")
+) -> FilteredPerformanceResponse:
+    """Return dynamically filtered historical performance KPIs, category breakdown, and regional breakdown."""
+    norm_year = str(year).strip().lower()
+    norm_cat = str(category).strip().lower()
+    norm_reg = str(region).strip().lower()
+
+    if norm_year not in ALLOWED_YEARS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid year filter: '{year}'. Allowed values: All, 2014, 2015, 2016, 2017."
+        )
+
+    if norm_cat not in ALLOWED_CATEGORIES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid category filter: '{category}'. Allowed values: All, Furniture, Office Supplies, Technology."
+        )
+
+    if norm_reg not in ALLOWED_REGIONS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid region filter: '{region}'. Allowed values: All, Central, East, South, West."
+        )
+
+    raw_df = get_cached_raw_df()
+    return calculate_filtered_performance_analytics(
+        raw_df=raw_df,
+        year=year,
+        category=category,
+        region=region
+    )
+

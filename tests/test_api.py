@@ -185,7 +185,127 @@ def test_post_ask_provider_failure_returns_503(client: TestClient):
 
 
 # ==============================================================================
-# 6. STATIC ASSETS & SECURITY VERIFICATIONS
+# 6. HISTORICAL PERFORMANCE FILTERING TESTS
+# ==============================================================================
+
+def test_get_performance_default_unfiltered(client: TestClient):
+    """Verify GET /api/performance with defaults returns full historical KPIs."""
+    response = client.get("/api/performance")
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["active_filters"]["year"] == "All"
+    assert data["active_filters"]["category"] == "All"
+    assert data["active_filters"]["region"] == "All"
+    assert data["record_count"] == 9994
+    assert data["filtered_kpis"]["total_quantity"] == 37873
+    assert data["filtered_kpis"]["total_sales"] == pytest.approx(2297200.86, abs=1.0)
+    assert data["filtered_kpis"]["total_profit"] == pytest.approx(286397.02, abs=1.0)
+    assert len(data["category_summary"]) == 3
+    assert len(data["regional_summary"]) == 4
+
+
+def test_get_performance_filter_by_year(client: TestClient):
+    """Verify GET /api/performance?year=2017 filters correctly to 2017 transactions."""
+    response = client.get("/api/performance?year=2017")
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["active_filters"]["year"] == "2017"
+    assert data["filtered_kpis"]["total_quantity"] == 12476
+    assert data["filtered_kpis"]["total_sales"] == pytest.approx(733215.26, abs=1.0)
+    assert data["filtered_kpis"]["total_profit"] == pytest.approx(93439.27, abs=1.0)
+    assert data["record_count"] == 3312
+
+
+def test_get_performance_filter_by_category(client: TestClient):
+    """Verify GET /api/performance?category=Technology filters correctly to Technology."""
+    response = client.get("/api/performance?category=Technology")
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["active_filters"]["category"] == "Technology"
+    assert data["filtered_kpis"]["total_quantity"] == 6939
+    assert data["filtered_kpis"]["total_sales"] == pytest.approx(836154.03, abs=1.0)
+    assert data["filtered_kpis"]["total_profit"] == pytest.approx(145454.95, abs=1.0)
+
+    # In category breakdown, Technology has 100% share while others are 0
+    tech_item = [c for c in data["category_summary"] if c["dimension_value"] == "Technology"][0]
+    assert tech_item["quantity"] == 6939
+    assert tech_item["quantity_share_pct"] == 100.0
+
+
+def test_get_performance_filter_by_region(client: TestClient):
+    """Verify GET /api/performance?region=West filters correctly to West region."""
+    response = client.get("/api/performance?region=West")
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["active_filters"]["region"] == "West"
+    assert data["filtered_kpis"]["total_quantity"] == 12266
+    assert data["filtered_kpis"]["total_sales"] == pytest.approx(725457.82, abs=1.0)
+    assert data["filtered_kpis"]["total_profit"] == pytest.approx(108418.45, abs=1.0)
+
+    # In regional breakdown, West has 100% share
+    west_item = [r for r in data["regional_summary"] if r["dimension_value"] == "West"][0]
+    assert west_item["quantity"] == 12266
+    assert west_item["quantity_share_pct"] == 100.0
+
+
+def test_get_performance_combined_filters(client: TestClient):
+    """Verify GET /api/performance with combined Year, Category, Region filters."""
+    response = client.get("/api/performance?year=2017&category=Technology&region=West")
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["active_filters"]["year"] == "2017"
+    assert data["active_filters"]["category"] == "Technology"
+    assert data["active_filters"]["region"] == "West"
+    assert data["filtered_kpis"]["total_quantity"] == 851
+    assert data["filtered_kpis"]["total_sales"] == pytest.approx(95959.15, abs=1.0)
+    assert data["filtered_kpis"]["total_profit"] == pytest.approx(18983.80, abs=1.0)
+    assert data["filtered_kpis"]["total_orders"] == 177
+    assert data["record_count"] == 213
+
+
+def test_get_performance_v1_alias(client: TestClient):
+    """Verify /api/v1/performance alias behaves identically."""
+    response = client.get("/api/v1/performance?year=2016")
+    assert response.status_code == 200
+    assert response.json()["active_filters"]["year"] == "2016"
+
+
+def test_get_performance_invalid_filters_rejects_400(client: TestClient):
+    """Verify invalid year, category, or region returns 400 Bad Request."""
+    resp1 = client.get("/api/performance?year=1999")
+    assert resp1.status_code == 400
+
+    resp2 = client.get("/api/performance?category=InvalidCategory")
+    assert resp2.status_code == 400
+
+    resp3 = client.get("/api/performance?region=Antarctica")
+    assert resp3.status_code == 400
+
+
+def test_performance_filtering_does_not_affect_forecast_or_models(client: TestClient):
+    """Verify that calling performance filters does not mutate forecast or model benchmarks."""
+    # 1. Call filtered performance
+    client.get("/api/performance?year=2017&category=Technology")
+
+    # 2. Check forecast is unchanged
+    f_resp = client.get("/api/forecast?horizon=52")
+    assert f_resp.status_code == 200
+    assert f_resp.json()["total_forecast_quantity"] == pytest.approx(16266.75, abs=10.0)
+
+    # 3. Check models benchmark is unchanged
+    m_resp = client.get("/api/models")
+    assert m_resp.status_code == 200
+    champion = [m for m in m_resp.json()["models"] if m["is_champion"]][0]
+    assert champion["mae"] == 39.02
+
+
+# ==============================================================================
+# 7. STATIC ASSETS & SECURITY VERIFICATIONS
 # ==============================================================================
 
 def test_root_serves_static_dashboard(client: TestClient):
@@ -198,9 +318,10 @@ def test_root_serves_static_dashboard(client: TestClient):
 
 def test_no_api_keys_exposed_in_any_endpoint(client: TestClient):
     """Verify that no sensitive environment keys appear in endpoint payloads."""
-    for path in ["/api/health", "/api/analytics", "/api/dashboard", "/api/forecast", "/api/models"]:
+    for path in ["/api/health", "/api/analytics", "/api/dashboard", "/api/forecast", "/api/models", "/api/performance"]:
         resp = client.get(path)
         assert resp.status_code == 200
         text = resp.text
         assert "AIzaSy" not in text
         assert "LLM_API_KEY" not in text
+

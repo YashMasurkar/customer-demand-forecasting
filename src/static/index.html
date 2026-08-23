@@ -244,6 +244,80 @@
                 </div>
             </div>
 
+            <!-- Interactive Historical Performance Filter Bar -->
+            <div class="perf-filter-bar">
+                <div class="filter-controls-row">
+                    <div class="filter-group">
+                        <label for="perf-filter-year" class="filter-label">Year:</label>
+                        <select id="perf-filter-year" class="filter-select">
+                            <option value="All">All Years (2014–2017)</option>
+                            <option value="2014">2014</option>
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="perf-filter-category" class="filter-label">Category:</label>
+                        <select id="perf-filter-category" class="filter-select">
+                            <option value="All">All Categories</option>
+                            <option value="Furniture">Furniture</option>
+                            <option value="Office Supplies">Office Supplies</option>
+                            <option value="Technology">Technology</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="perf-filter-region" class="filter-label">Region:</label>
+                        <select id="perf-filter-region" class="filter-select">
+                            <option value="All">All Regions</option>
+                            <option value="Central">Central</option>
+                            <option value="East">East</option>
+                            <option value="South">South</option>
+                            <option value="West">West</option>
+                        </select>
+                    </div>
+
+                    <button id="btn-reset-perf-filters" class="btn-reset-filter" title="Reset all filters">
+                        <span>↺</span> Reset Filters
+                    </button>
+                </div>
+
+                <div class="filter-status-badge" id="perf-filter-status">
+                    Filter: <strong>All Data (9,994 records)</strong>
+                </div>
+            </div>
+
+            <!-- Dynamic Filtered KPIs Strip -->
+            <div class="perf-kpi-strip">
+                <div class="perf-kpi-item">
+                    <span class="p-kpi-label">Filtered Demand</span>
+                    <span class="p-kpi-value" id="pkpi-quantity">37.9K u</span>
+                    <span class="p-kpi-sub" id="pkpi-quantity-sub">37,873 total units</span>
+                </div>
+                <div class="perf-kpi-item">
+                    <span class="p-kpi-label">Filtered Revenue</span>
+                    <span class="p-kpi-value" id="pkpi-sales">$2.30M</span>
+                    <span class="p-kpi-sub" id="pkpi-sales-sub">$2,297,200.86</span>
+                </div>
+                <div class="perf-kpi-item">
+                    <span class="p-kpi-label">Filtered Profit</span>
+                    <span class="p-kpi-value" id="pkpi-profit">$286.4K</span>
+                    <span class="p-kpi-sub" id="pkpi-profit-sub">$286,397.02</span>
+                </div>
+                <div class="perf-kpi-item">
+                    <span class="p-kpi-label">Profit Margin</span>
+                    <span class="p-kpi-value" id="pkpi-margin">12.5%</span>
+                    <span class="p-kpi-sub" id="pkpi-margin-sub">Efficiency ratio</span>
+                </div>
+                <div class="perf-kpi-item">
+                    <span class="p-kpi-label">Orders / AOV</span>
+                    <span class="p-kpi-value" id="pkpi-orders">5,009</span>
+                    <span class="p-kpi-sub" id="pkpi-aov-sub">AOV: $458.61</span>
+                </div>
+            </div>
+
             <div class="performance-grid">
                 <!-- Category Performance Card -->
                 <div class="card">

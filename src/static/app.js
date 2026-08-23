@@ -21,6 +21,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const modelsTableBody = document.querySelector("#models-table tbody");
     const segButtons = document.querySelectorAll(".seg-btn");
 
+    // Performance Filter DOM Elements
+    const filterYear = document.getElementById("perf-filter-year");
+    const filterCategory = document.getElementById("perf-filter-category");
+    const filterRegion = document.getElementById("perf-filter-region");
+    const btnResetFilters = document.getElementById("btn-reset-perf-filters");
+    const filterStatus = document.getElementById("perf-filter-status");
+
     // Analyst Elements
     const analystForm = document.getElementById("analyst-form");
     const queryInput = document.getElementById("analyst-query-input");
@@ -83,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!res.ok) throw new Error("Failed to load dashboard data");
         cachedDashboard = await res.json();
 
-        // 1. Populate Executive KPI Cards
+        // 1. Populate Executive KPI Cards (Historical 2014-2017 baseline)
         const k = cachedDashboard.historical_kpis;
         document.getElementById("kpi-quantity").textContent = Number(k.total_quantity).toLocaleString() + " u";
         document.getElementById("kpi-sales").textContent = "$" + (Number(k.total_sales) / 1000000).toFixed(2) + "M";
@@ -101,11 +108,73 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `).join("");
 
-        // 3. Render Category Breakdown (Chart & Table)
+        // 3. Populate Initial Filtered KPI Strip (Unfiltered baseline)
+        updatePerformanceKPIStrip(k, k.total_transactions);
+
+        // 4. Render Initial Category Breakdown (Chart & Table)
         renderCategoryPerformance(cachedDashboard.category_summary);
 
-        // 4. Render Regional Distribution (Chart & Table)
+        // 5. Render Initial Regional Distribution (Chart & Table)
         renderRegionalPerformance(cachedDashboard.regional_summary);
+    }
+
+    function updatePerformanceKPIStrip(k, totalRows) {
+        if (!k) return;
+        const elQty = document.getElementById("pkpi-quantity");
+        const elQtySub = document.getElementById("pkpi-quantity-sub");
+        const elSales = document.getElementById("pkpi-sales");
+        const elSalesSub = document.getElementById("pkpi-sales-sub");
+        const elProfit = document.getElementById("pkpi-profit");
+        const elProfitSub = document.getElementById("pkpi-profit-sub");
+        const elMargin = document.getElementById("pkpi-margin");
+        const elMarginSub = document.getElementById("pkpi-margin-sub");
+        const elOrders = document.getElementById("pkpi-orders");
+        const elAovSub = document.getElementById("pkpi-aov-sub");
+
+        if (elQty) elQty.textContent = formatCompact(k.total_quantity) + " u";
+        if (elQtySub) elQtySub.textContent = `${Number(k.total_quantity).toLocaleString()} total units`;
+        if (elSales) elSales.textContent = formatCurrency(k.total_sales);
+        if (elSalesSub) elSalesSub.textContent = `$${Number(k.total_sales).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        if (elProfit) elProfit.textContent = formatCurrency(k.total_profit);
+        if (elProfitSub) elProfitSub.textContent = `$${Number(k.total_profit).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        if (elMargin) elMargin.textContent = `${k.profit_margin_pct.toFixed(1)}%`;
+        if (elMarginSub) elMarginSub.textContent = `Efficiency ratio`;
+        if (elOrders) elOrders.textContent = Number(k.total_orders).toLocaleString();
+        if (elAovSub) elAovSub.textContent = `AOV: $${k.average_order_value.toFixed(2)}`;
+    }
+
+    async function applyPerformanceFilters() {
+        const yr = filterYear ? filterYear.value : "All";
+        const cat = filterCategory ? filterCategory.value : "All";
+        const reg = filterRegion ? filterRegion.value : "All";
+
+        try {
+            const res = await fetch(`/api/performance?year=${encodeURIComponent(yr)}&category=${encodeURIComponent(cat)}&region=${encodeURIComponent(reg)}`);
+            if (!res.ok) throw new Error("Failed to load filtered performance data");
+            const perfData = await res.json();
+
+            // 1. Update Filter Status Badge
+            if (filterStatus) {
+                const parts = [];
+                if (yr !== "All") parts.push(`Year: ${yr}`);
+                if (cat !== "All") parts.push(`Category: ${cat}`);
+                if (reg !== "All") parts.push(`Region: ${reg}`);
+                const desc = parts.length ? parts.join(" • ") : "All Historical Data";
+                filterStatus.innerHTML = `Filter: <strong>${escapeHtml(desc)} (${Number(perfData.record_count).toLocaleString()} records)</strong>`;
+            }
+
+            // 2. Update Filtered KPI Strip
+            updatePerformanceKPIStrip(perfData.filtered_kpis, perfData.record_count);
+
+            // 3. Render Filtered Category Performance Chart & Table
+            renderCategoryPerformance(perfData.category_summary);
+
+            // 4. Render Filtered Regional Performance Chart & Table
+            renderRegionalPerformance(perfData.regional_summary);
+
+        } catch (err) {
+            console.error("Filter update error:", err);
+        }
     }
 
     function renderCategoryPerformance(categories) {
@@ -398,6 +467,19 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
+        // Performance Filter Dropdowns & Reset
+        if (filterYear) filterYear.addEventListener("change", applyPerformanceFilters);
+        if (filterCategory) filterCategory.addEventListener("change", applyPerformanceFilters);
+        if (filterRegion) filterRegion.addEventListener("change", applyPerformanceFilters);
+        if (btnResetFilters) {
+            btnResetFilters.addEventListener("click", () => {
+                if (filterYear) filterYear.value = "All";
+                if (filterCategory) filterCategory.value = "All";
+                if (filterRegion) filterRegion.value = "All";
+                applyPerformanceFilters();
+            });
+        }
+
         // Prompt Chips
         document.querySelectorAll(".chip").forEach(chip => {
             chip.addEventListener("click", () => {
@@ -456,6 +538,28 @@ document.addEventListener("DOMContentLoaded", () => {
             btnText.style.display = "inline-flex";
             btnSpinner.style.display = "none";
         }
+    }
+
+    function formatCurrency(val) {
+        const num = Number(val);
+        if (Math.abs(num) >= 1000000) {
+            return "$" + (num / 1000000).toFixed(2) + "M";
+        }
+        if (Math.abs(num) >= 1000) {
+            return "$" + (num / 1000).toFixed(1) + "K";
+        }
+        return "$" + num.toFixed(2);
+    }
+
+    function formatCompact(val) {
+        const num = Number(val);
+        if (Math.abs(num) >= 1000000) {
+            return (num / 1000000).toFixed(2) + "M";
+        }
+        if (Math.abs(num) >= 1000) {
+            return (num / 1000).toFixed(1) + "K";
+        }
+        return num.toLocaleString();
     }
 
     function escapeHtml(str) {
