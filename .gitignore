@@ -1,0 +1,44 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment variables & secrets
+.env
+.env.local
+*.secret
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data directories (keep directory structure with .gitkeep)
+data/raw/*
+!data/raw/.gitkeep
+data/cleaned/*
+!data/cleaned/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Model artifacts
+models/*
+!models/.gitkeep
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
