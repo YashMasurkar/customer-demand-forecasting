@@ -1,6 +1,7 @@
 """Unit and integration tests for Grounded LLM Business Analyst layer (All Gemini API calls mocked)."""
 
 import json
+from pathlib import Path
 import pytest
 from unittest.mock import MagicMock, patch
 
@@ -141,6 +142,29 @@ def test_historical_vs_forecast_separation_in_prompt():
     assert "39.02" in sp
     assert "16,266.8" in sp
     assert "Forecast Origin" in sp
+
+
+def test_executive_conciseness_and_formatting_prompt_rules():
+    """Verify system instructions enforce concise executive answers and clean Markdown formatting."""
+    sp = GROUNDED_SYSTEM_INSTRUCTION
+    assert "EXECUTIVE CONCISENESS" in sp
+    assert "3–5 most relevant" in sp or "3-5 most relevant" in sp or "3–5" in sp
+    assert "Do NOT dump" in sp or "Do NOT repeat" in sp or "entire analytics context" in sp
+    assert "STRUCTURE & FORMATTING" in sp
+
+    prompt = build_grounded_prompt("What is demand next year?", "{}")
+    assert "executive-level answer" in prompt
+    assert "Markdown" in prompt
+
+
+def test_verified_analytics_context_badge_in_ui():
+    """Verify that UI uses 'Verified Analytics Context' and does not claim Zero-Hallucination."""
+    html_path = Path("src/static/index.html")
+    assert html_path.exists()
+    content = html_path.read_text(encoding="utf-8")
+
+    assert "Verified Analytics Context" in content
+    assert "Zero-Hallucination" not in content
 
 
 # ==============================================================================

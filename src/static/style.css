@@ -1278,7 +1278,73 @@ body {
     font-size: 0.94rem;
     color: var(--text-main);
     line-height: 1.65;
-    white-space: pre-wrap;
+}
+
+.response-content h1,
+.response-content h2,
+.response-content h3,
+.response-content h4 {
+    color: var(--text-main);
+    font-weight: 700;
+    margin-top: 14px;
+    margin-bottom: 8px;
+    letter-spacing: -0.015em;
+}
+
+.response-content h1 { font-size: 1.15rem; }
+.response-content h2 { font-size: 1.05rem; }
+.response-content h3 { font-size: 0.98rem; }
+.response-content h4 { font-size: 0.92rem; }
+
+.response-content h1:first-child,
+.response-content h2:first-child,
+.response-content h3:first-child,
+.response-content h4:first-child {
+    margin-top: 0;
+}
+
+.response-content p {
+    margin-bottom: 12px;
+    line-height: 1.65;
+}
+
+.response-content p:last-child {
+    margin-bottom: 0;
+}
+
+.response-content ul,
+.response-content ol {
+    margin-left: 20px;
+    margin-bottom: 12px;
+}
+
+.response-content li {
+    margin-bottom: 6px;
+    line-height: 1.55;
+}
+
+.response-content strong {
+    font-weight: 700;
+    color: #1e1b4b;
+}
+
+.response-content em {
+    font-style: italic;
+}
+
+.response-content hr {
+    border: none;
+    border-top: 1px solid #ede9fe;
+    margin: 16px 0;
+}
+
+.response-content code {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-family: monospace;
+    font-size: 0.86em;
+    color: var(--brand-indigo-hover);
 }
 
 .response-footer {

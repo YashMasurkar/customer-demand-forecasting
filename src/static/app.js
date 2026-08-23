@@ -503,7 +503,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btnText.style.display = "none";
         btnSpinner.style.display = "inline-flex";
         responseCard.style.display = "block";
-        responseContent.textContent = "Connecting to Gemini Analyst layer and synthesizing deterministic Python context...";
+        responseContent.innerHTML = "<p>Connecting to Gemini Analyst layer and synthesizing deterministic Python context...</p>";
         responseModelTag.textContent = "gemini-3.6-flash";
         responseLatencyTag.textContent = "Analyzing...";
         responseCaveatBox.style.display = "none";
@@ -521,7 +521,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const answer = await res.json();
-            responseContent.textContent = answer.answer;
+            responseContent.innerHTML = renderMarkdownToSafeHtml(answer.answer);
             responseModelTag.textContent = answer.model;
             responseLatencyTag.textContent = `Latency: ${answer.execution_time_seconds ? answer.execution_time_seconds.toFixed(2) + 's' : '0.4s'}`;
 
@@ -531,12 +531,141 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
         } catch (err) {
-            responseContent.textContent = `Error: ${err.message || "Failed to process query."}`;
+            responseContent.innerHTML = `<p style="color: #ef4444;"><strong>Error:</strong> ${escapeHtml(err.message || "Failed to process query.")}</p>`;
             responseLatencyTag.textContent = "Error";
         } finally {
             submitBtn.disabled = false;
             btnText.style.display = "inline-flex";
             btnSpinner.style.display = "none";
+        }
+    }
+
+    /**
+     * Parse and render Markdown to safe, sanitized HTML.
+     * Escapes all raw HTML first to prevent XSS, then converts Markdown syntax to safe tags.
+     */
+    function renderMarkdownToSafeHtml(markdown) {
+        if (!markdown) return "";
+        try {
+            // 1. Sanitize raw text by escaping all HTML special characters first
+            let text = String(markdown)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+
+            // Normalize line breaks
+            text = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
+            const lines = text.split("\n");
+            const out = [];
+            let inList = false;
+            let listType = "ul"; // 'ul' or 'ol'
+            let currentParagraph = [];
+
+            function flushParagraph() {
+                if (currentParagraph.length > 0) {
+                    const pContent = currentParagraph.join("<br>");
+                    if (pContent.trim()) {
+                        out.push(`<p>${formatInline(pContent)}</p>`);
+                    }
+                    currentParagraph = [];
+                }
+            }
+
+            function closeList() {
+                if (inList) {
+                    out.push(`</${listType}>`);
+                    inList = false;
+                }
+            }
+
+            function formatInline(str) {
+                // Inline code: `code`
+                str = str.replace(/`([^`]+)`/g, "<code>$1</code>");
+                // Bold + Italic: ***text*** or ___text___
+                str = str.replace(/\*\*\*([^*]+)\*\*\*/g, "<strong><em>$1</em></strong>");
+                str = str.replace(/___([^_]+)___/g, "<strong><em>$1</em></strong>");
+                // Bold: **text** or __text__
+                str = str.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+                str = str.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+                // Italic: *text* or _text_
+                str = str.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+                str = str.replace(/_([^_]+)_/g, "<em>$1</em>");
+                return str;
+            }
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const trimmed = line.trim();
+
+                // Blank line
+                if (!trimmed) {
+                    flushParagraph();
+                    closeList();
+                    continue;
+                }
+
+                // Horizontal Rule: --- or *** or ___
+                if (/^(?:---|\*\*\*|___)\s*$/.test(trimmed)) {
+                    flushParagraph();
+                    closeList();
+                    out.push("<hr>");
+                    continue;
+                }
+
+                // Headings: #, ##, ###, ####
+                const hMatch = trimmed.match(/^(#{1,4})\s+(.+)$/);
+                if (hMatch) {
+                    flushParagraph();
+                    closeList();
+                    const level = hMatch[1].length;
+                    const hContent = formatInline(hMatch[2]);
+                    out.push(`<h${level}>${hContent}</h${level}>`);
+                    continue;
+                }
+
+                // Bullet List: * item or - item
+                const ulMatch = trimmed.match(/^[\*\-]\s+(.+)$/);
+                if (ulMatch) {
+                    flushParagraph();
+                    if (!inList || listType !== "ul") {
+                        closeList();
+                        out.push("<ul>");
+                        inList = true;
+                        listType = "ul";
+                    }
+                    out.push(`<li>${formatInline(ulMatch[1])}</li>`);
+                    continue;
+                }
+
+                // Numbered List: 1. item
+                const olMatch = trimmed.match(/^\d+\.\s+(.+)$/);
+                if (olMatch) {
+                    flushParagraph();
+                    if (!inList || listType !== "ol") {
+                        closeList();
+                        out.push("<ol>");
+                        inList = true;
+                        listType = "ol";
+                    }
+                    out.push(`<li>${formatInline(olMatch[1])}</li>`);
+                    continue;
+                }
+
+                // Regular paragraph text
+                closeList();
+                currentParagraph.push(trimmed);
+            }
+
+            flushParagraph();
+            closeList();
+
+            return out.join("");
+        } catch (err) {
+            console.error("Markdown rendering fallback error:", err);
+            return `<p>${escapeHtml(markdown)}</p>`;
         }
     }
 
