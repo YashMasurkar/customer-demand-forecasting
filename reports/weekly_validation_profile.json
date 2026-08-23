@@ -1,0 +1,23 @@
+{
+  "first_week": "2013-12-30",
+  "last_week": "2017-12-25",
+  "num_weeks": 209,
+  "total_raw_quantity": 37873,
+  "total_weekly_quantity": 37873,
+  "reconciliation_passed": true,
+  "mean_weekly_quantity": 181.21,
+  "median_weekly_quantity": 158.0,
+  "std_weekly_quantity": 102.46,
+  "min_weekly_quantity": 13.0,
+  "max_weekly_quantity": 564.0,
+  "missing_weeks_count": 0,
+  "missing_weeks": [],
+  "zero_demand_weeks_count": 0,
+  "zero_demand_weeks": [],
+  "duplicate_weeks_count": 0,
+  "additional_metrics": {
+    "total_sales": 2297200.88,
+    "mean_weekly_sales": 10991.39,
+    "total_profit": 286396.99
+  }
+}

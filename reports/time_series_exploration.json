@@ -1,0 +1,225 @@
+{
+  "num_observations": 209,
+  "date_range": {
+    "start": "2013-12-30",
+    "end": "2017-12-25"
+  },
+  "summary_stats": {
+    "mean": 181.21052631578948,
+    "median": 158.0,
+    "std": 102.46220543454119,
+    "min": 13.0,
+    "max": 564.0,
+    "iqr": 128.0,
+    "skewness": 1.0167911790405082,
+    "kurtosis": 0.9990224151008382
+  },
+  "annual_patterns": {
+    "2013": {
+      "total_demand": 13,
+      "mean_weekly_demand": 13.0,
+      "num_weeks": 1,
+      "yoy_demand_growth_pct": null
+    },
+    "2014": {
+      "total_demand": 7638,
+      "mean_weekly_demand": 146.88,
+      "num_weeks": 52,
+      "yoy_demand_growth_pct": null
+    },
+    "2015": {
+      "total_demand": 7935,
+      "mean_weekly_demand": 152.6,
+      "num_weeks": 52,
+      "yoy_demand_growth_pct": 3.89
+    },
+    "2016": {
+      "total_demand": 9867,
+      "mean_weekly_demand": 189.75,
+      "num_weeks": 52,
+      "yoy_demand_growth_pct": 24.35
+    },
+    "2017": {
+      "total_demand": 12420,
+      "mean_weekly_demand": 238.85,
+      "num_weeks": 52,
+      "yoy_demand_growth_pct": 25.87
+    }
+  },
+  "trend_analysis": {
+    "linear_slope_per_week": 0.8593,
+    "linear_intercept": 91.84,
+    "direction": "Upward",
+    "start_estimated_trend": 91.84,
+    "end_estimated_trend": 270.58,
+    "total_estimated_trend_change": 178.74
+  },
+  "seasonality_evidence": {
+    "evaluated_max_lags": 52,
+    "lag_1_autocorrelation": 0.6974,
+    "lag_52_autocorrelation": 0.4964,
+    "top_autocorrelation_lags": [
+      {
+        "lag": 1,
+        "autocorrelation": 0.6974
+      },
+      {
+        "lag": 2,
+        "autocorrelation": 0.6402
+      },
+      {
+        "lag": 52,
+        "autocorrelation": 0.4964
+      },
+      {
+        "lag": 3,
+        "autocorrelation": 0.4835
+      },
+      {
+        "lag": 51,
+        "autocorrelation": 0.4534
+      }
+    ],
+    "has_annual_seasonality_signal": true,
+    "monthly_demand_distribution": {
+      "1": 82.41,
+      "2": 75.53,
+      "3": 149.0,
+      "4": 134.31,
+      "5": 165.28,
+      "6": 145.11,
+      "7": 155.47,
+      "8": 179.72,
+      "9": 278.59,
+      "10": 198.72,
+      "11": 349.41,
+      "12": 257.72
+    }
+  },
+  "rolling_statistics": {
+    "rolling_4w_mean": {
+      "min": 40.75,
+      "max": 484.75,
+      "current_end": 338.0
+    },
+    "rolling_4w_std": {
+      "min": 6.13,
+      "max": 136.59,
+      "mean": 53.04
+    },
+    "rolling_12w_mean": {
+      "min": 74.58,
+      "max": 372.0,
+      "current_end": 361.33
+    },
+    "rolling_12w_std": {
+      "min": 25.99,
+      "max": 125.91,
+      "mean": 68.73
+    }
+  },
+  "extreme_weeks": {
+    "high_threshold": 386.13,
+    "high_weeks_count": 12,
+    "high_weeks": [
+      {
+        "week": "2015-11-30",
+        "quantity": 388
+      },
+      {
+        "week": "2016-11-07",
+        "quantity": 395
+      },
+      {
+        "week": "2016-12-05",
+        "quantity": 462
+      },
+      {
+        "week": "2017-09-04",
+        "quantity": 422
+      },
+      {
+        "week": "2017-09-11",
+        "quantity": 403
+      },
+      {
+        "week": "2017-09-18",
+        "quantity": 447
+      },
+      {
+        "week": "2017-10-30",
+        "quantity": 437
+      },
+      {
+        "week": "2017-11-06",
+        "quantity": 416
+      },
+      {
+        "week": "2017-11-13",
+        "quantity": 485
+      },
+      {
+        "week": "2017-11-20",
+        "quantity": 410
+      },
+      {
+        "week": "2017-11-27",
+        "quantity": 564
+      },
+      {
+        "week": "2017-12-04",
+        "quantity": 480
+      }
+    ],
+    "low_threshold": 27.52,
+    "low_weeks_count": 2,
+    "low_weeks": [
+      {
+        "week": "2013-12-30",
+        "quantity": 13
+      },
+      {
+        "week": "2015-01-19",
+        "quantity": 15
+      }
+    ]
+  },
+  "volatility_metrics": {
+    "coefficient_of_variation": 0.5654,
+    "std_to_mean_ratio": 0.5654,
+    "interquartile_range": 128.0
+  },
+  "stationarity_tests": {
+    "adf_test": {
+      "test_statistic": -4.1662,
+      "p_value": 0.000751,
+      "used_lag": 2,
+      "critical_values": {
+        "1%": -3.4625,
+        "5%": -2.8757,
+        "10%": -2.5743
+      },
+      "is_stationary_at_5pct": true
+    },
+    "kpss_test": {
+      "test_statistic": 1.0552,
+      "p_value": 0.01,
+      "used_lags": 8,
+      "critical_values": {
+        "10%": 0.347,
+        "5%": 0.463,
+        "2.5%": 0.574,
+        "1%": 0.739
+      },
+      "is_stationary_at_5pct": false
+    },
+    "joint_interpretation": "Trend-Stationary / Non-Stationary mean: ADF rejects unit root, but KPSS rejects stationarity around a constant mean due to deterministic positive trend and strong annual cyclicality."
+  },
+  "key_findings": [
+    "The weekly demand exhibits a measurable upward trend with an empirical slope of +0.86 units/week.",
+    "Substantial annual growth: Annual weekly mean grew from 146.9 units/week in 2014 to 238.8 units/week in 2017 (+62.6% total expansion).",
+    "Significant annual lag autocorrelation: Autocorrelation at lag 52 is r_52 = 0.4964, indicating recurring 52-week annual cycle patterns.",
+    "Seasonal concentration: 11 of the 12 unusually high demand weeks (> 386.1 units) occurred in the September\u2013December window.",
+    "Overall volatility is moderate with a Coefficient of Variation (CV) of 0.5654 (std = 102.5, mean = 181.2)."
+  ]
+}
