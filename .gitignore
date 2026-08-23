@@ -25,10 +25,14 @@ htmlcov/
 # Data directories (keep directory structure with .gitkeep)
 data/raw/*
 !data/raw/.gitkeep
+!data/raw/Sample_Superstore.csv
+
 data/cleaned/*
 !data/cleaned/.gitkeep
+
 data/processed/*
 !data/processed/.gitkeep
+!data/processed/weekly_demand.csv
 
 # Model artifacts
 models/*
