@@ -1,8 +1,25 @@
 """Feature engineering module for weekly demand forecasting.
 
-This module constructs temporal, autoregressive lag, rolling historical summary,
-and lagged business features while strictly preventing lookahead and future leakage.
-It also provides an exhaustive, documented Feature Leakage Audit.
+Forecasting Scenario & Origin Assumption:
+------------------------------------------
+"At the end of completed week t, the system forecasts demand for week t+1."
+
+Under this one-step-ahead / rolling forecasting scenario, lagged business features
+(e.g., lag_1_sales, lag_1_profit, lag_1_order_count, lag_1_transaction_count,
+lag_1_unique_customers) are fully observed and available because week t has already completed.
+
+Important Horizon Limitation:
+------------------------------
+These lagged business features would NOT be available for a long-horizon 52-week-ahead
+direct/static forecast unless separately forecasted or supplied as known exogenous variables.
+
+Training Sample Size Consideration:
+------------------------------------
+Holt-Winters and SARIMA utilize the complete 2014-2016 training history (156 complete weeks).
+In contrast, the ML feature matrix requires 52 historical observations to populate the lag_52
+features, leaving 105 effective training observations (2014-12-29 to 2016-12-26).
+This difference in effective training sample size is an inherent structural distinction
+between univariate state-space smoothing and autoregressive tabular feature representations.
 """
 
 from typing import Dict, List, Optional, Tuple
@@ -46,6 +63,8 @@ def build_weekly_feature_dataset(
 ) -> Tuple[pd.DataFrame, List[str]]:
     """Construct complete weekly feature matrix with temporal, lag, rolling, and business features.
 
+    Forecasting Origin Assumption:
+    At the end of week t, forecast target_quantity for week t+1.
     All rolling and business features strictly use lagged historical information (t-1, t-52)
     to guarantee zero lookahead leakage.
 
@@ -118,7 +137,7 @@ def build_weekly_feature_dataset(
 
 
 def generate_feature_leakage_audit() -> pd.DataFrame:
-    """Generate exhaustive documented Feature Leakage Audit table.
+    """Generate exhaustive documented Feature Leakage Audit table with forecast-origin context.
 
     Returns:
         DataFrame cataloging every feature, its source, temporal classification, availability status, and rationale.
@@ -133,7 +152,7 @@ def generate_feature_leakage_audit() -> pd.DataFrame:
         {"Feature": "cos_woy", "Category": "Temporal", "Shift/Window": "Calendar", "Temporal Class": "Known at forecast time", "Status": "ALLOWED", "Rationale": "Cosinesoidal annual cyclical encoding known in advance."},
 
         # Target Lags
-        {"Feature": "lag_1", "Category": "Target Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week actual demand, fully observed at prediction time."},
+        {"Feature": "lag_1", "Category": "Target Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week actual demand, fully observed at prediction time (end of week t)."},
         {"Feature": "lag_2", "Category": "Target Lag", "Shift/Window": "Shift -2", "Temporal Class": "Historical (t-2)", "Status": "ALLOWED", "Rationale": "Observed 2 weeks prior."},
         {"Feature": "lag_4", "Category": "Target Lag", "Shift/Window": "Shift -4", "Temporal Class": "Historical (t-4)", "Status": "ALLOWED", "Rationale": "Observed 4 weeks prior."},
         {"Feature": "lag_8", "Category": "Target Lag", "Shift/Window": "Shift -8", "Temporal Class": "Historical (t-8)", "Status": "ALLOWED", "Rationale": "Observed 8 weeks prior."},
@@ -149,14 +168,14 @@ def generate_feature_leakage_audit() -> pd.DataFrame:
         {"Feature": "rolling_std_13", "Category": "Rolling Target", "Shift/Window": "Shift -1, Win 13", "Temporal Class": "Historical (t-13 to t-1)", "Status": "ALLOWED", "Rationale": "13-week demand volatility on lagged values; excludes y_t."},
 
         # Lagged Business Features
-        {"Feature": "lag_1_sales", "Category": "Business Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week total sales revenue observed at prediction time."},
+        {"Feature": "lag_1_sales", "Category": "Business Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week total sales revenue observed at end of completed week t. (Note: unavailable for 52-week-ahead forecast without exogenous forecasts)."},
         {"Feature": "lag_52_sales", "Category": "Business Lag", "Shift/Window": "Shift -52", "Temporal Class": "Historical (t-52)", "Status": "ALLOWED", "Rationale": "Prior year same-week sales revenue observed at prediction time."},
-        {"Feature": "lag_1_profit", "Category": "Business Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week total profit observed at prediction time."},
-        {"Feature": "lag_1_avg_discount", "Category": "Business Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week average discount observed at prediction time."},
-        {"Feature": "lag_1_order_count", "Category": "Business Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week unique order count observed at prediction time."},
+        {"Feature": "lag_1_profit", "Category": "Business Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week total profit observed at end of completed week t."},
+        {"Feature": "lag_1_avg_discount", "Category": "Business Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week average discount observed at end of completed week t."},
+        {"Feature": "lag_1_order_count", "Category": "Business Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week unique order count observed at end of completed week t."},
         {"Feature": "lag_52_order_count", "Category": "Business Lag", "Shift/Window": "Shift -52", "Temporal Class": "Historical (t-52)", "Status": "ALLOWED", "Rationale": "Prior year same-week order count observed at prediction time."},
-        {"Feature": "lag_1_transaction_count", "Category": "Business Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week transaction line item volume."},
-        {"Feature": "lag_1_unique_customers", "Category": "Business Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week unique customer count."},
+        {"Feature": "lag_1_transaction_count", "Category": "Business Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week transaction line item volume observed at end of completed week t."},
+        {"Feature": "lag_1_unique_customers", "Category": "Business Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week unique customer count observed at end of completed week t."},
         {"Feature": "lag_1_qty_furniture", "Category": "Category Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week Furniture demand volume."},
         {"Feature": "lag_52_qty_furniture", "Category": "Category Lag", "Shift/Window": "Shift -52", "Temporal Class": "Historical (t-52)", "Status": "ALLOWED", "Rationale": "Prior year same-week Furniture demand volume."},
         {"Feature": "lag_1_qty_office_supplies", "Category": "Category Lag", "Shift/Window": "Shift -1", "Temporal Class": "Historical (t-1)", "Status": "ALLOWED", "Rationale": "Prior week Office Supplies volume."},

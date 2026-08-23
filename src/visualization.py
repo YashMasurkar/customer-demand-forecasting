@@ -263,8 +263,8 @@ def plot_feature_importances(
     fig, ax = plt.subplots(figsize=(10, 7))
 
     bars = ax.barh(names, vals, color="#1f77b4", edgecolor="#0e4975", alpha=0.85, height=0.65)
-    ax.set_title(f"Top {top_n} Engineered Features by Predictive Importance — {model_name}\n(Descriptive statistical association; non-causal)", fontsize=12, fontweight="bold", pad=12)
-    ax.set_xlabel("Absolute Importance / Standardized Coefficient Magnitude", fontsize=11)
+    ax.set_title(f"Top {top_n} Predictors — Ridge Standardized Coefficients (|Beta|)\n(Descriptive statistical association; non-causal)", fontsize=12, fontweight="bold", pad=12)
+    ax.set_xlabel("Absolute Standardized Regression Coefficient Magnitude (|Beta|)", fontsize=11)
     ax.grid(True, linestyle="--", alpha=0.5, axis="x")
 
     # Add numeric labels to bars

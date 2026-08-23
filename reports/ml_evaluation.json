@@ -1,6 +1,16 @@
 {
   "phase": "Phase 6 \u2014 Machine Learning Forecasting",
-  "training_samples": 105,
+  "forecasting_origin_scenario": {
+    "definition": "At the end of completed week t, the system forecasts demand for week t+1.",
+    "lagged_business_feature_availability": "Lagged business metrics (lag_1_sales, lag_1_profit, lag_1_orders, lag_1_customers) are fully available under the 1-step rolling setting because week t has completed.",
+    "horizon_limitation": "These lagged business features would NOT be available for a long-horizon 52-week-ahead forecast without separate exogenous projections."
+  },
+  "sample_size_comparison": {
+    "statistical_models_train_weeks": 156,
+    "ml_models_train_weeks": 105,
+    "warmup_weeks_lost_to_lag52": 51,
+    "sample_size_limitation_note": "ML requires 52 observations to initialize lag_52, reducing effective training samples from 156 to 105. This represents an inherent structural difference between model classes."
+  },
   "test_samples": 52,
   "num_features": 36,
   "cv_results": [
@@ -320,7 +330,7 @@
       "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
     }
   },
-  "feature_importance_top10": [
+  "ridge_feature_coefficients_top10": [
     {
       "feature_name": "month",
       "importance_value": 7.76954,

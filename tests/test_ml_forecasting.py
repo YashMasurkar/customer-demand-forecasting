@@ -1,8 +1,9 @@
-"""Unit tests for ML forecasting pipeline, Cross-Validation, and feature importance."""
+"""Unit tests for ML forecasting pipeline, Cross-Validation, and Ridge coefficient analysis."""
 
 import pytest
 import numpy as np
 import pandas as pd
+from typing import Tuple
 from pathlib import Path
 from src.features.feature_engineering import build_weekly_feature_dataset
 from src.models.ml_forecasting import (
@@ -61,22 +62,18 @@ def test_ml_forecaster_fit_and_predict_length(sample_ml_data):
         assert np.all(preds >= 0.0)  # Non-negative clipping
 
 
-def test_ml_forecaster_feature_importance_ranking(sample_ml_data):
-    """Verify feature importance extraction and ranking structure."""
+def test_ridge_feature_coefficient_analysis(sample_ml_data):
+    """Verify Ridge standardized coefficient extraction and ranking."""
     X_train, y_train, _, _ = sample_ml_data
 
-    # Test Ridge
-    ridge = MLDemandForecaster(model_type="ridge").fit(X_train, y_train)
-    r_imp = ridge.get_feature_importances()
-    assert len(r_imp) == X_train.shape[1]
-    assert all(isinstance(r, FeatureImportanceRecord) for r in r_imp)
-    assert r_imp[0].importance_value >= r_imp[-1].importance_value
+    ridge = MLDemandForecaster(model_type="ridge", model_params={"alpha": 10.0}).fit(X_train, y_train)
+    coef_records = ridge.get_ridge_coefficients()
 
-    # Test Random Forest
-    rf = MLDemandForecaster(model_type="random_forest", model_params={"n_estimators": 20}).fit(X_train, y_train)
-    rf_imp = rf.get_feature_importances()
-    assert len(rf_imp) == X_train.shape[1]
-    assert rf_imp[0].importance_value >= rf_imp[-1].importance_value
+    assert len(coef_records) == X_train.shape[1]
+    assert all(isinstance(r, FeatureImportanceRecord) for r in coef_records)
+    # Ranked descending
+    assert coef_records[0].importance_value >= coef_records[-1].importance_value
+    assert coef_records[0].rank == 1
 
 
 def test_time_series_cv_chronological_ordering(sample_ml_data):

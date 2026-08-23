@@ -3,7 +3,7 @@
 This module implements:
 1. Chronological expanding-window Cross-Validation (TimeSeriesSplit) on the training set.
 2. Training and evaluation of Ridge, Random Forest, and Gradient Boosting models.
-3. Feature importance analysis and model selection.
+3. Ridge Feature Coefficient Analysis and tree feature importance ranking (descriptive, non-causal).
 """
 
 from dataclasses import dataclass, field
@@ -33,14 +33,14 @@ class MLCVResult:
 
 @dataclass
 class FeatureImportanceRecord:
-    """Container for individual feature importance metrics."""
+    """Container for individual feature coefficient or importance metrics (descriptive association)."""
     feature_name: str
     importance_value: float
     rank: int
 
 
 class MLDemandForecaster:
-    """Machine Learning Demand Forecaster managing training, CV, prediction, and feature importance."""
+    """Machine Learning Demand Forecaster managing training, CV, prediction, and Ridge coefficient analysis."""
 
     def __init__(
         self,
@@ -51,7 +51,7 @@ class MLDemandForecaster:
         """Initialize ML forecaster.
 
         Args:
-            model_type: 'ridge', 'random_forest', 'gradient_boosting', or 'hist_gradient_boosting'.
+            model_type: 'ridge', 'linear', 'random_forest', 'gradient_boosting', or 'hist_gradient_boosting'.
             model_params: Dictionary of model hyperparameters.
             random_state: Seed for reproducibility.
         """
@@ -141,10 +141,14 @@ class MLDemandForecaster:
         return np.maximum(0.0, np.asarray(raw_preds, dtype=float))
 
     def get_feature_importances(self) -> List[FeatureImportanceRecord]:
-        """Extract and rank feature importances or coefficients.
+        """Extract and rank standardized Ridge coefficients or tree feature importances.
+
+        Methodology Note:
+        For Ridge regression models, values represent absolute standardized regression coefficients |beta_j|,
+        reflecting linear statistical association strength, not tree split frequencies or causal effects.
 
         Returns:
-            List of FeatureImportanceRecord sorted by absolute importance descending.
+            List of FeatureImportanceRecord sorted by absolute coefficient magnitude descending.
         """
         if not self.is_fitted:
             raise RuntimeError("Model must be fitted before extracting feature importances.")
@@ -169,6 +173,10 @@ class MLDemandForecaster:
         for idx, r in enumerate(records, start=1):
             r.rank = idx
         return records
+
+    def get_ridge_coefficients(self) -> List[FeatureImportanceRecord]:
+        """Alias for Ridge Feature Coefficient Analysis."""
+        return self.get_feature_importances()
 
 
 def run_time_series_cv(

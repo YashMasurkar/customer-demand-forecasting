@@ -5,7 +5,7 @@ quarter,Temporal,Calendar,Known at forecast time,ALLOWED,Calendar quarter (1-4) 
 week_of_year_feat,Temporal,Calendar,Known at forecast time,ALLOWED,ISO week number (1-53) known in advance.
 sin_woy,Temporal,Calendar,Known at forecast time,ALLOWED,Sinusoidal annual cyclical encoding known in advance.
 cos_woy,Temporal,Calendar,Known at forecast time,ALLOWED,Cosinesoidal annual cyclical encoding known in advance.
-lag_1,Target Lag,Shift -1,Historical (t-1),ALLOWED,"Prior week actual demand, fully observed at prediction time."
+lag_1,Target Lag,Shift -1,Historical (t-1),ALLOWED,"Prior week actual demand, fully observed at prediction time (end of week t)."
 lag_2,Target Lag,Shift -2,Historical (t-2),ALLOWED,Observed 2 weeks prior.
 lag_4,Target Lag,Shift -4,Historical (t-4),ALLOWED,Observed 4 weeks prior.
 lag_8,Target Lag,Shift -8,Historical (t-8),ALLOWED,Observed 8 weeks prior.
@@ -17,14 +17,14 @@ rolling_mean_8,Rolling Target,"Shift -1, Win 8",Historical (t-8 to t-1),ALLOWED,
 rolling_mean_13,Rolling Target,"Shift -1, Win 13",Historical (t-13 to t-1),ALLOWED,13-week moving average computed strictly on lagged values; excludes y_t.
 rolling_std_4,Rolling Target,"Shift -1, Win 4",Historical (t-4 to t-1),ALLOWED,4-week demand standard deviation on lagged values; excludes y_t.
 rolling_std_13,Rolling Target,"Shift -1, Win 13",Historical (t-13 to t-1),ALLOWED,13-week demand volatility on lagged values; excludes y_t.
-lag_1_sales,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week total sales revenue observed at prediction time.
+lag_1_sales,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week total sales revenue observed at end of completed week t. (Note: unavailable for 52-week-ahead forecast without exogenous forecasts).
 lag_52_sales,Business Lag,Shift -52,Historical (t-52),ALLOWED,Prior year same-week sales revenue observed at prediction time.
-lag_1_profit,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week total profit observed at prediction time.
-lag_1_avg_discount,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week average discount observed at prediction time.
-lag_1_order_count,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week unique order count observed at prediction time.
+lag_1_profit,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week total profit observed at end of completed week t.
+lag_1_avg_discount,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week average discount observed at end of completed week t.
+lag_1_order_count,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week unique order count observed at end of completed week t.
 lag_52_order_count,Business Lag,Shift -52,Historical (t-52),ALLOWED,Prior year same-week order count observed at prediction time.
-lag_1_transaction_count,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week transaction line item volume.
-lag_1_unique_customers,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week unique customer count.
+lag_1_transaction_count,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week transaction line item volume observed at end of completed week t.
+lag_1_unique_customers,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week unique customer count observed at end of completed week t.
 lag_1_qty_furniture,Category Lag,Shift -1,Historical (t-1),ALLOWED,Prior week Furniture demand volume.
 lag_52_qty_furniture,Category Lag,Shift -52,Historical (t-52),ALLOWED,Prior year same-week Furniture demand volume.
 lag_1_qty_office_supplies,Category Lag,Shift -1,Historical (t-1),ALLOWED,Prior week Office Supplies volume.

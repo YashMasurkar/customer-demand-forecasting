@@ -53,7 +53,7 @@
     "Shift/Window": "Shift -1",
     "Temporal Class": "Historical (t-1)",
     "Status": "ALLOWED",
-    "Rationale": "Prior week actual demand, fully observed at prediction time."
+    "Rationale": "Prior week actual demand, fully observed at prediction time (end of week t)."
   },
   {
     "Feature": "lag_2",
@@ -149,7 +149,7 @@
     "Shift/Window": "Shift -1",
     "Temporal Class": "Historical (t-1)",
     "Status": "ALLOWED",
-    "Rationale": "Prior week total sales revenue observed at prediction time."
+    "Rationale": "Prior week total sales revenue observed at end of completed week t. (Note: unavailable for 52-week-ahead forecast without exogenous forecasts)."
   },
   {
     "Feature": "lag_52_sales",
@@ -165,7 +165,7 @@
     "Shift/Window": "Shift -1",
     "Temporal Class": "Historical (t-1)",
     "Status": "ALLOWED",
-    "Rationale": "Prior week total profit observed at prediction time."
+    "Rationale": "Prior week total profit observed at end of completed week t."
   },
   {
     "Feature": "lag_1_avg_discount",
@@ -173,7 +173,7 @@
     "Shift/Window": "Shift -1",
     "Temporal Class": "Historical (t-1)",
     "Status": "ALLOWED",
-    "Rationale": "Prior week average discount observed at prediction time."
+    "Rationale": "Prior week average discount observed at end of completed week t."
   },
   {
     "Feature": "lag_1_order_count",
@@ -181,7 +181,7 @@
     "Shift/Window": "Shift -1",
     "Temporal Class": "Historical (t-1)",
     "Status": "ALLOWED",
-    "Rationale": "Prior week unique order count observed at prediction time."
+    "Rationale": "Prior week unique order count observed at end of completed week t."
   },
   {
     "Feature": "lag_52_order_count",
@@ -197,7 +197,7 @@
     "Shift/Window": "Shift -1",
     "Temporal Class": "Historical (t-1)",
     "Status": "ALLOWED",
-    "Rationale": "Prior week transaction line item volume."
+    "Rationale": "Prior week transaction line item volume observed at end of completed week t."
   },
   {
     "Feature": "lag_1_unique_customers",
@@ -205,7 +205,7 @@
     "Shift/Window": "Shift -1",
     "Temporal Class": "Historical (t-1)",
     "Status": "ALLOWED",
-    "Rationale": "Prior week unique customer count."
+    "Rationale": "Prior week unique customer count observed at end of completed week t."
   },
   {
     "Feature": "lag_1_qty_furniture",

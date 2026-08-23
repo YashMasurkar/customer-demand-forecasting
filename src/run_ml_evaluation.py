@@ -63,8 +63,23 @@ def main():
     X_test = test_data[feature_cols]
     y_test = test_data["target_quantity"].values
 
-    print(f"\nTraining Dataset: {len(X_train)} weeks ({train_data['week_start'].iloc[0]} to {train_data['week_start'].iloc[-1]})")
-    print(f"Test Dataset:     {len(X_test)} weeks ({test_data['week_start'].iloc[0]} to {test_data['week_start'].iloc[-1]})")
+    print("\n" + "=" * 85)
+    print("PHASE 6: MACHINE LEARNING FORECASTING & BENCHMARK EVALUATION")
+    print("=" * 85)
+    print("Forecasting Origin Definition:")
+    print("  * 'At the end of completed week t, the system forecasts demand for week t+1.'")
+    print("  * Availability: Under this 1-step rolling scenario, lagged business features (lag_1_sales,")
+    print("    lag_1_profit, lag_1_order_count, lag_1_customers) are fully observed because week t has completed.")
+    print("  * Limitation:   These features are NOT available for a long-horizon 52-week-ahead static forecast")
+    print("                  unless separately forecasted or provided as known exogenous schedules.")
+
+    print("\nEffective Training Sample Size Comparison:")
+    print(f"  * Statistical Models (Holt-Winters / SARIMA): 156 complete weeks (2014-01-06 to 2016-12-26).")
+    print(f"  * Machine Learning Feature Matrix:             105 usable weeks (2014-12-29 to 2016-12-26).")
+    print("  * Explanation: ML loses the initial 52 weeks to populate the lag_52 features. This creates a")
+    print("    different effective sample size and represents an inherent structural difference between model classes.")
+
+    print(f"\nTest Dataset:     52 weeks ({test_data['week_start'].iloc[0]} to {test_data['week_start'].iloc[-1]})")
     print(f"Features Included: {len(feature_cols)} engineered predictors")
 
     # 3. Cross-Validation on Training Period (TimeSeriesSplit with 4 folds)
@@ -79,9 +94,9 @@ def main():
         "Linear Regression (OLS)": ("linear", {}),
     }
 
-    print("\n" + "=" * 80)
+    print("\n" + "=" * 85)
     print("PHASE 6A: CHRONOLOGICAL CROSS-VALIDATION ON TRAINING DATA (N_train = 105)")
-    print("=" * 80)
+    print("=" * 85)
     cv_results = run_time_series_cv(X_train, y_train, candidate_models, n_splits=4, random_state=42)
 
     print(f"{'Model':<35} | {'Mean CV MAE':>11} | {'Mean CV RMSE':>12} | {'Std CV MAE':>10}")
@@ -94,9 +109,9 @@ def main():
         json.dump([r.__dict__ for r in cv_results], f, indent=2)
 
     # 4. Out-of-Sample Test Evaluation Across All Models
-    print("\n" + "=" * 80)
+    print("\n" + "=" * 85)
     print("PHASE 6B: OUT-OF-SAMPLE TEST EVALUATION ON UNTOUCHED 2017 TEST SET (52 Weeks)")
-    print("=" * 80)
+    print("=" * 85)
 
     test_metrics_list = []
     test_preds_dict = {}
@@ -109,9 +124,7 @@ def main():
         metrics = calculate_forecast_metrics(y_test, preds, model_name=name)
         test_metrics_list.append((name, metrics, forecaster))
 
-    # Identify best ML model on test set and best CV model
-    best_cv_model_name = cv_results[0].model_name  # HistGradientBoosting (49.50) / RF (49.68)
-    best_test_ml = sorted(test_metrics_list, key=lambda x: x[1].mae)[0]  # Ridge Regression alpha=100 (MAE: 50.02)
+    best_test_ml = sorted(test_metrics_list, key=lambda x: x[1].mae)[0]  # Ridge Regression alpha=100
 
     # 5. Load Classical Statistical Baselines for Comparison
     hw_metrics = None
@@ -155,26 +168,30 @@ def main():
     if naive_metrics:
         print(f"{naive_metrics['model_name']:<42} | {naive_metrics['mae']:>7.2f} | {naive_metrics['rmse']:>7.2f} | {naive_metrics['mape']:>6.2f}% | {naive_metrics['smape']:>6.2f}% | {naive_metrics['mean_error']:>+9.2f}")
 
-    # 6. Feature Importance Analysis for Best Performing ML Model (Ridge & Random Forest)
+    # 6. Ridge Feature Coefficient Analysis (Best Performing ML Model)
     best_ml_name, best_ml_metrics, best_ml_forecaster = best_test_ml
-    importance_records = best_ml_forecaster.get_feature_importances()
+    importance_records = best_ml_forecaster.get_ridge_coefficients()
 
     print("\n" + "-" * 90)
-    print(f"TOP 10 PREDICTIVE FEATURES - {best_ml_name} (Standardized Coefficients)")
+    print(f"RIDGE FEATURE COEFFICIENT ANALYSIS - {best_ml_name} (|Standardized Beta|)")
     print("-" * 90)
+    print("Clarification: Reported values represent standardized linear regression coefficients.")
+    print("They indicate empirical predictive associations and must NOT be interpreted as causal influences.")
     for r in importance_records[:10]:
-        print(f"  Rank {r.rank:>2}: {r.feature_name:<30} | Absolute Weight = {r.importance_value:.4f}")
+        print(f"  Rank {r.rank:>2}: {r.feature_name:<30} | Absolute Coefficient = {r.importance_value:.4f}")
 
-    # Save Feature Importance
+    # Save Feature Coefficients
     importance_dict = [r.__dict__ for r in importance_records]
+    with open(reports_dir / "ridge_feature_coefficients.json", "w") as f:
+        json.dump(importance_dict, f, indent=2)
     with open(reports_dir / "feature_importance.json", "w") as f:
         json.dump(importance_dict, f, indent=2)
 
-    # Plot Feature Importance
+    # Plot Feature Coefficients
     plot_feature_importances(
         importance_records=importance_records,
         top_n=15,
-        model_name=best_ml_name,
+        model_name="Ridge Regression (alpha=100.0)",
         output_path=reports_dir / "feature_importance.png"
     )
 
@@ -196,7 +213,17 @@ def main():
     # 8. Save Complete Evaluation Report JSON
     eval_report = {
         "phase": "Phase 6 — Machine Learning Forecasting",
-        "training_samples": len(X_train),
+        "forecasting_origin_scenario": {
+            "definition": "At the end of completed week t, the system forecasts demand for week t+1.",
+            "lagged_business_feature_availability": "Lagged business metrics (lag_1_sales, lag_1_profit, lag_1_orders, lag_1_customers) are fully available under the 1-step rolling setting because week t has completed.",
+            "horizon_limitation": "These lagged business features would NOT be available for a long-horizon 52-week-ahead forecast without separate exogenous projections."
+        },
+        "sample_size_comparison": {
+            "statistical_models_train_weeks": 156,
+            "ml_models_train_weeks": len(X_train),
+            "warmup_weeks_lost_to_lag52": 51,
+            "sample_size_limitation_note": "ML requires 52 observations to initialize lag_52, reducing effective training samples from 156 to 105. This represents an inherent structural difference between model classes."
+        },
         "test_samples": len(X_test),
         "num_features": len(feature_cols),
         "cv_results": [r.__dict__ for r in cv_results],
@@ -211,7 +238,7 @@ def main():
             "seasonal_naive": snaive_metrics,
             "naive_1step": naive_metrics
         },
-        "feature_importance_top10": [r.__dict__ for r in importance_records[:10]],
+        "ridge_feature_coefficients_top10": [r.__dict__ for r in importance_records[:10]],
         "decision_outcome": {
             "outcome": "Outcome C: Machine Learning performs worse than Holt-Winters and SARIMA",
             "current_best_model": "Holt-Winters (Add Trend, Add Seasonality)",

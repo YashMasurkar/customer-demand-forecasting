@@ -120,3 +120,17 @@ def test_feature_leakage_audit_contents():
     statuses = set(audit_df["Status"].unique())
     assert "ALLOWED" in statuses
     assert any("PROHIBITED" in s for s in statuses)
+
+
+def test_forecasting_origin_documentation_and_availability():
+    """Verify that the forecast origin assumption is documented in module docstring and audit table."""
+    from src.features import feature_engineering
+    doc = feature_engineering.__doc__
+
+    assert "At the end of completed week t, the system forecasts demand for week t+1." in doc
+    assert "lag_1_sales" in doc
+    assert "52-week-ahead" in doc
+
+    audit_df = generate_feature_leakage_audit()
+    sales_lag1_row = audit_df[audit_df["Feature"] == "lag_1_sales"].iloc[0]
+    assert "completed week t" in sales_lag1_row["Rationale"]
