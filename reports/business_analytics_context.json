@@ -1,0 +1,1018 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at_utc": "2026-08-23T10:12:01.123585+00:00",
+  "historical_kpis": {
+    "total_quantity": 37873,
+    "total_sales": 2297200.86,
+    "total_profit": 286397.02,
+    "profit_margin_pct": 12.47,
+    "total_orders": 5009,
+    "total_transactions": 9994,
+    "unique_customers": 793,
+    "average_order_value": 458.61,
+    "average_units_per_order": 7.56,
+    "average_weekly_demand": 182.02,
+    "total_complete_weeks": 208,
+    "date_range_start": "2014-01-03",
+    "date_range_end": "2017-12-30"
+  },
+  "time_series_growth": {
+    "yoy_demand_growth": [
+      {
+        "period_name": "2015",
+        "previous_period_name": "2014",
+        "current_value": 7935.0,
+        "previous_value": 7638.0,
+        "absolute_change": 297.0,
+        "growth_pct": 3.89,
+        "growth_notes": "Standard percentage growth calculation."
+      },
+      {
+        "period_name": "2016",
+        "previous_period_name": "2015",
+        "current_value": 9867.0,
+        "previous_value": 7935.0,
+        "absolute_change": 1932.0,
+        "growth_pct": 24.35,
+        "growth_notes": "Standard percentage growth calculation."
+      },
+      {
+        "period_name": "2017",
+        "previous_period_name": "2016",
+        "current_value": 12420.0,
+        "previous_value": 9867.0,
+        "absolute_change": 2553.0,
+        "growth_pct": 25.87,
+        "growth_notes": "Standard percentage growth calculation."
+      }
+    ],
+    "yoy_sales_growth": [
+      {
+        "period_name": "2015",
+        "previous_period_name": "2014",
+        "current_value": 469069.48,
+        "previous_value": 487888.23,
+        "absolute_change": -18818.75,
+        "growth_pct": -3.86,
+        "growth_notes": "Standard percentage growth calculation."
+      },
+      {
+        "period_name": "2016",
+        "previous_period_name": "2015",
+        "current_value": 608185.67,
+        "previous_value": 469069.48,
+        "absolute_change": 139116.19,
+        "growth_pct": 29.66,
+        "growth_notes": "Standard percentage growth calculation."
+      },
+      {
+        "period_name": "2017",
+        "previous_period_name": "2016",
+        "current_value": 731733.46,
+        "previous_value": 608185.67,
+        "absolute_change": 123547.79,
+        "growth_pct": 20.31,
+        "growth_notes": "Standard percentage growth calculation."
+      }
+    ],
+    "yearly_totals": {
+      "2014": {
+        "quantity": 7638.0,
+        "sales": 487888.23
+      },
+      "2015": {
+        "quantity": 7935.0,
+        "sales": 469069.48
+      },
+      "2016": {
+        "quantity": 9867.0,
+        "sales": 608185.67
+      },
+      "2017": {
+        "quantity": 12420.0,
+        "sales": 731733.46
+      }
+    },
+    "quarterly_totals": {
+      "2014Q1": {
+        "quantity": 1180.0,
+        "sales": 83357.28
+      },
+      "2014Q2": {
+        "quantity": 1432.0,
+        "sales": 80715.78
+      },
+      "2014Q3": {
+        "quantity": 2164.0,
+        "sales": 142608.83
+      },
+      "2014Q4": {
+        "quantity": 2862.0,
+        "sales": 181206.34
+      },
+      "2015Q1": {
+        "quantity": 1019.0,
+        "sales": 69644.85
+      },
+      "2015Q2": {
+        "quantity": 1600.0,
+        "sales": 88082.12
+      },
+      "2015Q3": {
+        "quantity": 2255.0,
+        "sales": 129752.23
+      },
+      "2015Q4": {
+        "quantity": 3061.0,
+        "sales": 181590.28
+      },
+      "2016Q1": {
+        "quantity": 1303.0,
+        "sales": 94793.0
+      },
+      "2016Q2": {
+        "quantity": 2211.0,
+        "sales": 135369.59
+      },
+      "2016Q3": {
+        "quantity": 2765.0,
+        "sales": 159676.89
+      },
+      "2016Q4": {
+        "quantity": 3588.0,
+        "sales": 218346.19
+      },
+      "2017Q1": {
+        "quantity": 1865.0,
+        "sales": 128459.01
+      },
+      "2017Q2": {
+        "quantity": 2493.0,
+        "sales": 127777.46
+      },
+      "2017Q3": {
+        "quantity": 3430.0,
+        "sales": 198421.39
+      },
+      "2017Q4": {
+        "quantity": 4632.0,
+        "sales": 277075.6
+      }
+    },
+    "recent_4w_mean_demand": 338.0,
+    "recent_13w_mean_demand": 356.31
+  },
+  "dimension_breakdowns": {
+    "category": [
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Furniture",
+        "quantity": 8028,
+        "sales": 741999.8,
+        "profit": 18451.27,
+        "orders": 1764,
+        "profit_margin_pct": 2.49,
+        "quantity_share_pct": 21.2,
+        "sales_share_pct": 32.3
+      },
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Office Supplies",
+        "quantity": 22906,
+        "sales": 719047.03,
+        "profit": 122490.8,
+        "orders": 3742,
+        "profit_margin_pct": 17.04,
+        "quantity_share_pct": 60.48,
+        "sales_share_pct": 31.3
+      },
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Technology",
+        "quantity": 6939,
+        "sales": 836154.03,
+        "profit": 145454.95,
+        "orders": 1544,
+        "profit_margin_pct": 17.4,
+        "quantity_share_pct": 18.32,
+        "sales_share_pct": 36.4
+      }
+    ],
+    "sub_category": [
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Accessories",
+        "quantity": 2976,
+        "sales": 167380.32,
+        "profit": 41936.64,
+        "orders": 718,
+        "profit_margin_pct": 25.05,
+        "quantity_share_pct": 7.86,
+        "sales_share_pct": 7.29
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Appliances",
+        "quantity": 1729,
+        "sales": 107532.16,
+        "profit": 18138.01,
+        "orders": 451,
+        "profit_margin_pct": 16.87,
+        "quantity_share_pct": 4.57,
+        "sales_share_pct": 4.68
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Art",
+        "quantity": 3000,
+        "sales": 27118.79,
+        "profit": 6527.79,
+        "orders": 731,
+        "profit_margin_pct": 24.07,
+        "quantity_share_pct": 7.92,
+        "sales_share_pct": 1.18
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Binders",
+        "quantity": 5974,
+        "sales": 203412.73,
+        "profit": 30221.76,
+        "orders": 1316,
+        "profit_margin_pct": 14.86,
+        "quantity_share_pct": 15.77,
+        "sales_share_pct": 8.85
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Bookcases",
+        "quantity": 868,
+        "sales": 114880.0,
+        "profit": -3472.56,
+        "orders": 224,
+        "profit_margin_pct": -3.02,
+        "quantity_share_pct": 2.29,
+        "sales_share_pct": 5.0
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Chairs",
+        "quantity": 2356,
+        "sales": 328449.1,
+        "profit": 26590.17,
+        "orders": 576,
+        "profit_margin_pct": 8.1,
+        "quantity_share_pct": 6.22,
+        "sales_share_pct": 14.3
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Copiers",
+        "quantity": 234,
+        "sales": 149528.03,
+        "profit": 55617.82,
+        "orders": 68,
+        "profit_margin_pct": 37.2,
+        "quantity_share_pct": 0.62,
+        "sales_share_pct": 6.51
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Envelopes",
+        "quantity": 906,
+        "sales": 16476.4,
+        "profit": 6964.18,
+        "orders": 249,
+        "profit_margin_pct": 42.27,
+        "quantity_share_pct": 2.39,
+        "sales_share_pct": 0.72
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Fasteners",
+        "quantity": 914,
+        "sales": 3024.28,
+        "profit": 949.52,
+        "orders": 215,
+        "profit_margin_pct": 31.4,
+        "quantity_share_pct": 2.41,
+        "sales_share_pct": 0.13
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Furnishings",
+        "quantity": 3563,
+        "sales": 91705.16,
+        "profit": 13059.14,
+        "orders": 877,
+        "profit_margin_pct": 14.24,
+        "quantity_share_pct": 9.41,
+        "sales_share_pct": 3.99
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Labels",
+        "quantity": 1400,
+        "sales": 12486.31,
+        "profit": 5546.25,
+        "orders": 346,
+        "profit_margin_pct": 44.42,
+        "quantity_share_pct": 3.7,
+        "sales_share_pct": 0.54
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Machines",
+        "quantity": 440,
+        "sales": 189238.63,
+        "profit": 3384.76,
+        "orders": 112,
+        "profit_margin_pct": 1.79,
+        "quantity_share_pct": 1.16,
+        "sales_share_pct": 8.24
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Paper",
+        "quantity": 5178,
+        "sales": 78479.21,
+        "profit": 34053.57,
+        "orders": 1191,
+        "profit_margin_pct": 43.39,
+        "quantity_share_pct": 13.67,
+        "sales_share_pct": 3.42
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Phones",
+        "quantity": 3289,
+        "sales": 330007.05,
+        "profit": 44515.73,
+        "orders": 814,
+        "profit_margin_pct": 13.49,
+        "quantity_share_pct": 8.68,
+        "sales_share_pct": 14.37
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Storage",
+        "quantity": 3158,
+        "sales": 223843.61,
+        "profit": 21278.83,
+        "orders": 777,
+        "profit_margin_pct": 9.51,
+        "quantity_share_pct": 8.34,
+        "sales_share_pct": 9.74
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Supplies",
+        "quantity": 647,
+        "sales": 46673.54,
+        "profit": -1189.1,
+        "orders": 187,
+        "profit_margin_pct": -2.55,
+        "quantity_share_pct": 1.71,
+        "sales_share_pct": 2.03
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Tables",
+        "quantity": 1241,
+        "sales": 206965.53,
+        "profit": -17725.48,
+        "orders": 307,
+        "profit_margin_pct": -8.56,
+        "quantity_share_pct": 3.28,
+        "sales_share_pct": 9.01
+      }
+    ],
+    "region": [
+      {
+        "dimension_type": "Region",
+        "dimension_value": "Central",
+        "quantity": 8780,
+        "sales": 501239.89,
+        "profit": 39706.36,
+        "orders": 1175,
+        "profit_margin_pct": 7.92,
+        "quantity_share_pct": 23.18,
+        "sales_share_pct": 21.82
+      },
+      {
+        "dimension_type": "Region",
+        "dimension_value": "East",
+        "quantity": 10618,
+        "sales": 678781.24,
+        "profit": 91522.78,
+        "orders": 1401,
+        "profit_margin_pct": 13.48,
+        "quantity_share_pct": 28.04,
+        "sales_share_pct": 29.55
+      },
+      {
+        "dimension_type": "Region",
+        "dimension_value": "South",
+        "quantity": 6209,
+        "sales": 391721.91,
+        "profit": 46749.43,
+        "orders": 822,
+        "profit_margin_pct": 11.93,
+        "quantity_share_pct": 16.39,
+        "sales_share_pct": 17.05
+      },
+      {
+        "dimension_type": "Region",
+        "dimension_value": "West",
+        "quantity": 12266,
+        "sales": 725457.82,
+        "profit": 108418.45,
+        "orders": 1611,
+        "profit_margin_pct": 14.94,
+        "quantity_share_pct": 32.39,
+        "sales_share_pct": 31.58
+      }
+    ]
+  },
+  "top_bottom_performers": {
+    "top_categories_by_quantity": [
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Office Supplies",
+        "quantity": 22906,
+        "sales": 719047.03,
+        "profit": 122490.8,
+        "orders": 3742,
+        "profit_margin_pct": 17.04,
+        "quantity_share_pct": 60.48,
+        "sales_share_pct": 31.3
+      },
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Furniture",
+        "quantity": 8028,
+        "sales": 741999.8,
+        "profit": 18451.27,
+        "orders": 1764,
+        "profit_margin_pct": 2.49,
+        "quantity_share_pct": 21.2,
+        "sales_share_pct": 32.3
+      },
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Technology",
+        "quantity": 6939,
+        "sales": 836154.03,
+        "profit": 145454.95,
+        "orders": 1544,
+        "profit_margin_pct": 17.4,
+        "quantity_share_pct": 18.32,
+        "sales_share_pct": 36.4
+      }
+    ],
+    "top_categories_by_sales": [
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Technology",
+        "quantity": 6939,
+        "sales": 836154.03,
+        "profit": 145454.95,
+        "orders": 1544,
+        "profit_margin_pct": 17.4,
+        "quantity_share_pct": 18.32,
+        "sales_share_pct": 36.4
+      },
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Furniture",
+        "quantity": 8028,
+        "sales": 741999.8,
+        "profit": 18451.27,
+        "orders": 1764,
+        "profit_margin_pct": 2.49,
+        "quantity_share_pct": 21.2,
+        "sales_share_pct": 32.3
+      },
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Office Supplies",
+        "quantity": 22906,
+        "sales": 719047.03,
+        "profit": 122490.8,
+        "orders": 3742,
+        "profit_margin_pct": 17.04,
+        "quantity_share_pct": 60.48,
+        "sales_share_pct": 31.3
+      }
+    ],
+    "top_categories_by_profit": [
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Technology",
+        "quantity": 6939,
+        "sales": 836154.03,
+        "profit": 145454.95,
+        "orders": 1544,
+        "profit_margin_pct": 17.4,
+        "quantity_share_pct": 18.32,
+        "sales_share_pct": 36.4
+      },
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Office Supplies",
+        "quantity": 22906,
+        "sales": 719047.03,
+        "profit": 122490.8,
+        "orders": 3742,
+        "profit_margin_pct": 17.04,
+        "quantity_share_pct": 60.48,
+        "sales_share_pct": 31.3
+      },
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Furniture",
+        "quantity": 8028,
+        "sales": 741999.8,
+        "profit": 18451.27,
+        "orders": 1764,
+        "profit_margin_pct": 2.49,
+        "quantity_share_pct": 21.2,
+        "sales_share_pct": 32.3
+      }
+    ],
+    "bottom_categories_by_profit": [
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Furniture",
+        "quantity": 8028,
+        "sales": 741999.8,
+        "profit": 18451.27,
+        "orders": 1764,
+        "profit_margin_pct": 2.49,
+        "quantity_share_pct": 21.2,
+        "sales_share_pct": 32.3
+      },
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Office Supplies",
+        "quantity": 22906,
+        "sales": 719047.03,
+        "profit": 122490.8,
+        "orders": 3742,
+        "profit_margin_pct": 17.04,
+        "quantity_share_pct": 60.48,
+        "sales_share_pct": 31.3
+      },
+      {
+        "dimension_type": "Category",
+        "dimension_value": "Technology",
+        "quantity": 6939,
+        "sales": 836154.03,
+        "profit": 145454.95,
+        "orders": 1544,
+        "profit_margin_pct": 17.4,
+        "quantity_share_pct": 18.32,
+        "sales_share_pct": 36.4
+      }
+    ],
+    "top_sub_categories_by_quantity": [
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Binders",
+        "quantity": 5974,
+        "sales": 203412.73,
+        "profit": 30221.76,
+        "orders": 1316,
+        "profit_margin_pct": 14.86,
+        "quantity_share_pct": 15.77,
+        "sales_share_pct": 8.85
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Paper",
+        "quantity": 5178,
+        "sales": 78479.21,
+        "profit": 34053.57,
+        "orders": 1191,
+        "profit_margin_pct": 43.39,
+        "quantity_share_pct": 13.67,
+        "sales_share_pct": 3.42
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Furnishings",
+        "quantity": 3563,
+        "sales": 91705.16,
+        "profit": 13059.14,
+        "orders": 877,
+        "profit_margin_pct": 14.24,
+        "quantity_share_pct": 9.41,
+        "sales_share_pct": 3.99
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Phones",
+        "quantity": 3289,
+        "sales": 330007.05,
+        "profit": 44515.73,
+        "orders": 814,
+        "profit_margin_pct": 13.49,
+        "quantity_share_pct": 8.68,
+        "sales_share_pct": 14.37
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Storage",
+        "quantity": 3158,
+        "sales": 223843.61,
+        "profit": 21278.83,
+        "orders": 777,
+        "profit_margin_pct": 9.51,
+        "quantity_share_pct": 8.34,
+        "sales_share_pct": 9.74
+      }
+    ],
+    "bottom_sub_categories_by_profit": [
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Tables",
+        "quantity": 1241,
+        "sales": 206965.53,
+        "profit": -17725.48,
+        "orders": 307,
+        "profit_margin_pct": -8.56,
+        "quantity_share_pct": 3.28,
+        "sales_share_pct": 9.01
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Bookcases",
+        "quantity": 868,
+        "sales": 114880.0,
+        "profit": -3472.56,
+        "orders": 224,
+        "profit_margin_pct": -3.02,
+        "quantity_share_pct": 2.29,
+        "sales_share_pct": 5.0
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Supplies",
+        "quantity": 647,
+        "sales": 46673.54,
+        "profit": -1189.1,
+        "orders": 187,
+        "profit_margin_pct": -2.55,
+        "quantity_share_pct": 1.71,
+        "sales_share_pct": 2.03
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Fasteners",
+        "quantity": 914,
+        "sales": 3024.28,
+        "profit": 949.52,
+        "orders": 215,
+        "profit_margin_pct": 31.4,
+        "quantity_share_pct": 2.41,
+        "sales_share_pct": 0.13
+      },
+      {
+        "dimension_type": "Sub-Category",
+        "dimension_value": "Machines",
+        "quantity": 440,
+        "sales": 189238.63,
+        "profit": 3384.76,
+        "orders": 112,
+        "profit_margin_pct": 1.79,
+        "quantity_share_pct": 1.16,
+        "sales_share_pct": 8.24
+      }
+    ],
+    "regional_rankings": [
+      {
+        "dimension_type": "Region",
+        "dimension_value": "West",
+        "quantity": 12266,
+        "sales": 725457.82,
+        "profit": 108418.45,
+        "orders": 1611,
+        "profit_margin_pct": 14.94,
+        "quantity_share_pct": 32.39,
+        "sales_share_pct": 31.58
+      },
+      {
+        "dimension_type": "Region",
+        "dimension_value": "East",
+        "quantity": 10618,
+        "sales": 678781.24,
+        "profit": 91522.78,
+        "orders": 1401,
+        "profit_margin_pct": 13.48,
+        "quantity_share_pct": 28.04,
+        "sales_share_pct": 29.55
+      },
+      {
+        "dimension_type": "Region",
+        "dimension_value": "Central",
+        "quantity": 8780,
+        "sales": 501239.89,
+        "profit": 39706.36,
+        "orders": 1175,
+        "profit_margin_pct": 7.92,
+        "quantity_share_pct": 23.18,
+        "sales_share_pct": 21.82
+      },
+      {
+        "dimension_type": "Region",
+        "dimension_value": "South",
+        "quantity": 6209,
+        "sales": 391721.91,
+        "profit": 46749.43,
+        "orders": 822,
+        "profit_margin_pct": 11.93,
+        "quantity_share_pct": 16.39,
+        "sales_share_pct": 17.05
+      }
+    ]
+  },
+  "anomalies": [
+    {
+      "week_start": "2014-07-21",
+      "actual_quantity": 211.0,
+      "baseline_mean": 110.54,
+      "baseline_std": 32.14,
+      "z_score": 3.13,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 211 units was 3.13 standard deviations above the rolling 13-week baseline mean of 110.5 units."
+    },
+    {
+      "week_start": "2014-09-08",
+      "actual_quantity": 363.0,
+      "baseline_mean": 128.62,
+      "baseline_std": 41.86,
+      "z_score": 5.6,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 363 units was 5.60 standard deviations above the rolling 13-week baseline mean of 128.6 units."
+    },
+    {
+      "week_start": "2015-01-05",
+      "actual_quantity": 44.0,
+      "baseline_mean": 220.15,
+      "baseline_std": 64.25,
+      "z_score": -2.74,
+      "anomaly_direction": "low",
+      "description": "Observed weekly demand of 44 units was 2.74 standard deviations below the rolling 13-week baseline mean of 220.2 units."
+    },
+    {
+      "week_start": "2015-01-12",
+      "actual_quantity": 51.0,
+      "baseline_mean": 214.08,
+      "baseline_std": 76.73,
+      "z_score": -2.13,
+      "anomaly_direction": "low",
+      "description": "Observed weekly demand of 51 units was 2.13 standard deviations below the rolling 13-week baseline mean of 214.1 units."
+    },
+    {
+      "week_start": "2015-01-19",
+      "actual_quantity": 15.0,
+      "baseline_mean": 204.23,
+      "baseline_std": 88.86,
+      "z_score": -2.13,
+      "anomaly_direction": "low",
+      "description": "Observed weekly demand of 15 units was 2.13 standard deviations below the rolling 13-week baseline mean of 204.2 units."
+    },
+    {
+      "week_start": "2015-04-13",
+      "actual_quantity": 192.0,
+      "baseline_mean": 81.85,
+      "baseline_std": 43.01,
+      "z_score": 2.56,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 192 units was 2.56 standard deviations above the rolling 13-week baseline mean of 81.8 units."
+    },
+    {
+      "week_start": "2015-05-25",
+      "actual_quantity": 208.0,
+      "baseline_mean": 113.46,
+      "baseline_std": 40.56,
+      "z_score": 2.33,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 208 units was 2.33 standard deviations above the rolling 13-week baseline mean of 113.5 units."
+    },
+    {
+      "week_start": "2015-08-31",
+      "actual_quantity": 187.0,
+      "baseline_mean": 123.62,
+      "baseline_std": 28.45,
+      "z_score": 2.23,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 187 units was 2.23 standard deviations above the rolling 13-week baseline mean of 123.6 units."
+    },
+    {
+      "week_start": "2015-09-07",
+      "actual_quantity": 232.0,
+      "baseline_mean": 131.77,
+      "baseline_std": 30.34,
+      "z_score": 3.3,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 232 units was 3.30 standard deviations above the rolling 13-week baseline mean of 131.8 units."
+    },
+    {
+      "week_start": "2015-09-14",
+      "actual_quantity": 296.0,
+      "baseline_mean": 137.23,
+      "baseline_std": 40.67,
+      "z_score": 3.9,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 296 units was 3.90 standard deviations above the rolling 13-week baseline mean of 137.2 units."
+    },
+    {
+      "week_start": "2015-09-21",
+      "actual_quantity": 372.0,
+      "baseline_mean": 151.15,
+      "baseline_std": 59.19,
+      "z_score": 3.73,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 372 units was 3.73 standard deviations above the rolling 13-week baseline mean of 151.2 units."
+    },
+    {
+      "week_start": "2016-08-01",
+      "actual_quantity": 82.0,
+      "baseline_mean": 180.77,
+      "baseline_std": 38.27,
+      "z_score": -2.58,
+      "anomaly_direction": "low",
+      "description": "Observed weekly demand of 82 units was 2.58 standard deviations below the rolling 13-week baseline mean of 180.8 units."
+    },
+    {
+      "week_start": "2016-08-29",
+      "actual_quantity": 358.0,
+      "baseline_mean": 173.08,
+      "baseline_std": 50.02,
+      "z_score": 3.7,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 358 units was 3.70 standard deviations above the rolling 13-week baseline mean of 173.1 units."
+    },
+    {
+      "week_start": "2016-09-05",
+      "actual_quantity": 347.0,
+      "baseline_mean": 183.77,
+      "baseline_std": 71.08,
+      "z_score": 2.3,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 347 units was 2.30 standard deviations above the rolling 13-week baseline mean of 183.8 units."
+    },
+    {
+      "week_start": "2016-11-07",
+      "actual_quantity": 395.0,
+      "baseline_mean": 228.69,
+      "baseline_std": 81.52,
+      "z_score": 2.04,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 395 units was 2.04 standard deviations above the rolling 13-week baseline mean of 228.7 units."
+    },
+    {
+      "week_start": "2016-12-05",
+      "actual_quantity": 462.0,
+      "baseline_mean": 265.77,
+      "baseline_std": 88.66,
+      "z_score": 2.21,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 462 units was 2.21 standard deviations above the rolling 13-week baseline mean of 265.8 units."
+    },
+    {
+      "week_start": "2017-01-02",
+      "actual_quantity": 79.0,
+      "baseline_mean": 276.0,
+      "baseline_std": 97.79,
+      "z_score": -2.01,
+      "anomaly_direction": "low",
+      "description": "Observed weekly demand of 79 units was 2.01 standard deviations below the rolling 13-week baseline mean of 276.0 units."
+    },
+    {
+      "week_start": "2017-07-24",
+      "actual_quantity": 138.0,
+      "baseline_mean": 204.85,
+      "baseline_std": 32.46,
+      "z_score": -2.06,
+      "anomaly_direction": "low",
+      "description": "Observed weekly demand of 138 units was 2.06 standard deviations below the rolling 13-week baseline mean of 204.8 units."
+    },
+    {
+      "week_start": "2017-08-28",
+      "actual_quantity": 298.0,
+      "baseline_mean": 199.77,
+      "baseline_std": 37.76,
+      "z_score": 2.6,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 298 units was 2.60 standard deviations above the rolling 13-week baseline mean of 199.8 units."
+    },
+    {
+      "week_start": "2017-09-04",
+      "actual_quantity": 422.0,
+      "baseline_mean": 206.31,
+      "baseline_std": 46.57,
+      "z_score": 4.63,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 422 units was 4.63 standard deviations above the rolling 13-week baseline mean of 206.3 units."
+    },
+    {
+      "week_start": "2017-09-11",
+      "actual_quantity": 403.0,
+      "baseline_mean": 225.85,
+      "baseline_std": 74.23,
+      "z_score": 2.39,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 403 units was 2.39 standard deviations above the rolling 13-week baseline mean of 225.8 units."
+    },
+    {
+      "week_start": "2017-09-18",
+      "actual_quantity": 447.0,
+      "baseline_mean": 240.92,
+      "baseline_std": 88.6,
+      "z_score": 2.33,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 447 units was 2.33 standard deviations above the rolling 13-week baseline mean of 240.9 units."
+    },
+    {
+      "week_start": "2017-11-27",
+      "actual_quantity": 564.0,
+      "baseline_mean": 349.46,
+      "baseline_std": 98.4,
+      "z_score": 2.18,
+      "anomaly_direction": "high",
+      "description": "Observed weekly demand of 564 units was 2.18 standard deviations above the rolling 13-week baseline mean of 349.5 units."
+    }
+  ],
+  "forecast_analytics": {
+    "champion_model": "Holt-Winters (Additive Trend, Additive Seasonality, s=52)",
+    "forecast_start_date": "2017-01-02",
+    "forecast_end_date": "2017-12-25",
+    "horizons": {
+      "next_1_week": {
+        "horizon_name": "next_1_week",
+        "horizon_weeks": 1,
+        "total_forecast_quantity": 115.53,
+        "mean_weekly_forecast": 115.53,
+        "prior_period_actual_quantity": 220.0,
+        "pct_change_vs_prior_period": -47.49
+      },
+      "next_4_weeks": {
+        "horizon_name": "next_4_weeks",
+        "horizon_weeks": 4,
+        "total_forecast_quantity": 495.34,
+        "mean_weekly_forecast": 123.84,
+        "prior_period_actual_quantity": 1219.0,
+        "pct_change_vs_prior_period": -59.37
+      },
+      "next_8_weeks": {
+        "horizon_name": "next_8_weeks",
+        "horizon_weeks": 8,
+        "total_forecast_quantity": 990.39,
+        "mean_weekly_forecast": 123.8,
+        "prior_period_actual_quantity": 2597.0,
+        "pct_change_vs_prior_period": -61.86
+      },
+      "next_12_weeks": {
+        "horizon_name": "next_12_weeks",
+        "horizon_weeks": 12,
+        "total_forecast_quantity": 1741.98,
+        "mean_weekly_forecast": 145.16,
+        "prior_period_actual_quantity": 3456.0,
+        "pct_change_vs_prior_period": -49.6
+      },
+      "full_52_weeks": {
+        "horizon_name": "full_52_weeks",
+        "horizon_weeks": 52,
+        "total_forecast_quantity": 12224.53,
+        "mean_weekly_forecast": 235.09,
+        "prior_period_actual_quantity": 9867.0,
+        "pct_change_vs_prior_period": 23.89
+      }
+    },
+    "peak_forecast_week": {
+      "week_start": "2017-11-06",
+      "forecast_quantity": 406.31,
+      "description": "Peak projected weekly demand: 406.3 units on 2017-11-06."
+    },
+    "trough_forecast_week": {
+      "week_start": "2017-01-02",
+      "forecast_quantity": 115.53,
+      "description": "Trough projected weekly demand: 115.5 units on 2017-01-02."
+    },
+    "annual_forecast_total": 12224.53
+  },
+  "model_metadata": {
+    "model_name": "Holt-Winters Exponential Smoothing",
+    "model_type": "Additive Linear Trend, Additive Annual Seasonality (s=52)",
+    "training_period": "2014-01-06 to 2016-12-26 (156 weeks)",
+    "test_period": "2017-01-02 to 2017-12-25 (52 weeks)",
+    "test_mae": 39.02,
+    "test_rmse": 52.4,
+    "test_mape": 19.24,
+    "test_smape": 17.4,
+    "test_bias": 3.76,
+    "evaluation_notes": "Evaluation accuracy metrics reflect out-of-sample holdout performance on the unseen 2017 test set."
+  }
+}
