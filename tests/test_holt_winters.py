@@ -3,6 +3,7 @@
 import pytest
 import numpy as np
 import pandas as pd
+from typing import Tuple
 from pathlib import Path
 from src.baselines import create_chronological_split
 from src.evaluation import calculate_forecast_metrics
@@ -73,6 +74,25 @@ def test_holt_winters_fit_and_forecast_length(synthetic_seasonal_series):
     assert np.all(lower >= 0.0)  # Non-negative lower bound
 
 
+def test_holt_winters_prediction_interval_methods(synthetic_seasonal_series):
+    """Verify both analytical_approx and constant_residual interval methods."""
+    y_train, y_test = synthetic_seasonal_series
+    hw = HoltWintersForecaster(trend="add", seasonal="add", seasonal_periods=52).fit(y_train)
+
+    # Method A: Constant residual
+    preds_a, low_a, up_a = hw.predict(horizon=10, interval_method="constant_residual")
+    # Method B: Analytical approx
+    preds_b, low_b, up_b = hw.predict(horizon=10, interval_method="analytical_approx")
+
+    assert np.all(preds_a == preds_b)
+    # Horizon expansion makes analytical approx interval at h=10 wider than constant residual
+    assert (up_b[9] - low_b[9]) >= (up_a[9] - low_a[9])
+
+    # Invalid method error
+    with pytest.raises(ValueError, match="Unknown interval_method"):
+        hw.predict(horizon=10, interval_method="invalid_method")
+
+
 def test_holt_winters_no_test_leakage(synthetic_seasonal_series):
     """Verify that predictions at step t do not depend on test set data."""
     y_train, y_test = synthetic_seasonal_series
@@ -87,7 +107,7 @@ def test_holt_winters_no_test_leakage(synthetic_seasonal_series):
 
 
 def test_holt_winters_residual_diagnostics(synthetic_seasonal_series):
-    """Verify in-sample residual diagnostic calculations."""
+    """Verify in-sample residual diagnostic calculations and gamma documentation."""
     y_train, _ = synthetic_seasonal_series
     hw = HoltWintersForecaster(trend="add", seasonal="add", seasonal_periods=52).fit(y_train)
 
@@ -100,6 +120,8 @@ def test_holt_winters_residual_diagnostics(synthetic_seasonal_series):
     assert "lag_10" in diag.ljung_box_results
     assert "smoothing_level" in diag.model_params
     assert "smoothing_trend" in diag.model_params
+    assert len(diag.seasonal_parameter_interpretation) > 0
+    assert "gamma" in diag.seasonal_parameter_interpretation
 
 
 def test_holt_winters_on_real_data_accuracy():

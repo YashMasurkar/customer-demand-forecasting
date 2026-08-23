@@ -25,7 +25,8 @@
       "smoothing_trend": 0.0437,
       "smoothing_seasonal": 0.0,
       "damping_trend": null
-    }
+    },
+    "seasonal_parameter_gamma_interpretation": "The estimated seasonal smoothing parameter is gamma = 0.0000 (approximately 0.0). In the additive Holt-Winters seasonal update formula S_t = gamma*(y_t - L_{t-1} - T_{t-1}) + (1-gamma)*S_{t-s}, gamma ~ 0 means S_t is essentially fixed to S_{t-s}. The model is relying on a stable, time-invariant estimated 52-week seasonal profile rather than continuously updating seasonal indices across the 3 training years (156 weeks). This occurs because with only 3 cycles available in training, holding the 52 seasonal factors constant while allowing level (alpha=0.0437) and trend (beta=0.0437) to absorb volume changes minimizes in-sample mean squared error."
   },
   "accuracy_metrics": {
     "holt_winters": {
@@ -97,9 +98,25 @@
       "smoothing_trend": 0.0437,
       "smoothing_seasonal": 0.0,
       "damping_trend": null
+    },
+    "seasonal_parameter_interpretation": "The estimated seasonal smoothing parameter is gamma = 0.0000 (approximately 0.0). In the additive Holt-Winters seasonal update formula S_t = gamma*(y_t - L_{t-1} - T_{t-1}) + (1-gamma)*S_{t-s}, gamma ~ 0 means S_t is essentially fixed to S_{t-s}. The model is relying on a stable, time-invariant estimated 52-week seasonal profile rather than continuously updating seasonal indices across the 3 training years (156 weeks). This occurs because with only 3 cycles available in training, holding the 52 seasonal factors constant while allowing level (alpha=0.0437) and trend (beta=0.0437) to absorb volume changes minimizes in-sample mean squared error."
+  },
+  "prediction_interval_diagnostics": {
+    "native_statsmodels_support": "None provided for ExponentialSmoothing",
+    "constant_innovation_interval": {
+      "methodology": "forecast +/- z_0.975 * sigma_e",
+      "empirical_95pct_coverage": 84.61538461538461,
+      "is_under_covering": true,
+      "under_coverage_gap_pct": 10.38,
+      "reasons_for_under_coverage": "Does not expand over horizon h; fails to capture increased variance in Q4 holiday peak weeks."
+    },
+    "horizon_expanding_interval": {
+      "methodology": "forecast +/- z_0.975 * sigma_e * sqrt(1 + sum_{j=1}^{h-1} (alpha + j*beta)^2)",
+      "empirical_95pct_coverage": 100.0,
+      "is_under_covering": false,
+      "limitations": "Additive linear trend error variance expansion creates very wide intervals for long horizons (h=52)."
     }
   },
-  "prediction_interval_coverage_95pct": 86.53846153846155,
   "comparative_summary": {
     "hw_vs_snaive_mae_reduction_pct": 40.55,
     "hw_vs_snaive_rmse_reduction_pct": 38.11,

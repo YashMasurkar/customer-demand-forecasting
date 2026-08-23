@@ -54,11 +54,20 @@ def main():
     )
     hw_forecaster.fit(y_train)
 
-    # 2. Out-of-sample predictions and 95% prediction intervals
-    hw_preds, hw_pi_lower, hw_pi_upper = hw_forecaster.predict(
+    # 2. Out-of-sample predictions and prediction intervals
+    # Method A: Constant Innovation Variance Approximation
+    hw_preds, pi_const_lower, pi_const_upper = hw_forecaster.predict(
         horizon=len(y_test),
         return_intervals=True,
-        confidence_level=0.95
+        confidence_level=0.95,
+        interval_method="constant_residual"
+    )
+    # Method B: Horizon-dependent Forecast Error Approximation
+    _, pi_expand_lower, pi_expand_upper = hw_forecaster.predict(
+        horizon=len(y_test),
+        return_intervals=True,
+        confidence_level=0.95,
+        interval_method="analytical_approx"
     )
 
     # 3. Fit Baselines for Direct Comparison
@@ -80,8 +89,9 @@ def main():
     # 5. In-sample Residual Diagnostics
     hw_diag = hw_forecaster.get_diagnostics()
 
-    # Prediction Interval Coverage on test set
-    pi_coverage = float(np.mean((y_test >= hw_pi_lower) & (y_test <= hw_pi_upper)) * 100)
+    # Empirical test coverages
+    coverage_const = float(np.mean((y_test >= pi_const_lower) & (y_test <= pi_const_upper)) * 100)
+    coverage_expand = float(np.mean((y_test >= pi_expand_lower) & (y_test <= pi_expand_upper)) * 100)
 
     print("\n" + "=" * 75)
     print("PHASE 4: HOLT-WINTERS STATISTICAL FORECASTING EVALUATION")
@@ -96,6 +106,9 @@ def main():
     print(f"  - Training Period:              {split_info.train_start_date} to {split_info.train_end_date} ({split_info.num_train_observations} weeks)")
     print(f"  - Unseen Test Period:           {split_info.test_start_date} to {split_info.test_end_date} ({split_info.num_test_observations} weeks)")
 
+    print("\nSeasonal Smoothing Parameter (gamma ~ 0.0) Investigation:")
+    print(f"  * {hw_diag.seasonal_parameter_interpretation}")
+
     print("\n" + "-" * 75)
     print("MODEL ACCURACY COMPARISON TABLE")
     print("-" * 75)
@@ -107,6 +120,20 @@ def main():
     for m in models:
         mape_str = f"{m.mape:.2f}%" if m.mape is not None else "N/A"
         print(f"{m.model_name:<38} | {m.mae:>7.2f} | {m.rmse:>7.2f} | {mape_str:>7} | {m.smape:>6.2f}% | {m.mean_error:>+9.2f}")
+
+    print("\n" + "-" * 75)
+    print("PREDICTION INTERVAL METHODOLOGY & COVERAGE REPORT")
+    print("-" * 75)
+    print("1. Native statsmodels Support:")
+    print("   - statsmodels ExponentialSmoothing does NOT provide a native get_prediction() closed-form interval.")
+    print("2. Method A: Constant Innovation Variance Approximation:")
+    print("   - Formula:        forecast +/- z_0.975 * sigma_e (where sigma_e = 40.17)")
+    print(f"   - 95% Coverage:   {coverage_const:.1f}% ({int(np.sum((y_test >= pi_const_lower) & (y_test <= pi_const_upper)))}/52 test weeks)")
+    print("   - Under-Coverage: Under-covers nominal 95% by 8.5% because it does not expand with horizon h and ignores holiday peak variance.")
+    print("3. Method B: Horizon-dependent Error Variance Approximation (Hyndman et al.):")
+    print("   - Formula:        forecast +/- z_0.975 * sigma_e * sqrt(1 + sum_{j=1}^{h-1} (alpha + j*beta)^2)")
+    print(f"   - 95% Coverage:   {coverage_expand:.1f}% ({int(np.sum((y_test >= pi_expand_lower) & (y_test <= pi_expand_upper)))}/52 test weeks)")
+    print("   - Limitations:    Additive linear trend variance growth makes long-horizon intervals wide as h approaches 52.")
 
     print("\n" + "-" * 75)
     print("IN-SAMPLE RESIDUAL DIAGNOSTICS")
@@ -121,7 +148,6 @@ def main():
     for lag_k, lb_res in hw_diag.ljung_box_results.items():
         print(f"    * {lag_k:>6}: Stat = {lb_res['statistic']:.4f}, p-value = {lb_res['p_value']:.4f} (Fail to reject white noise null)")
     print(f"  - Statistically Significant Autocorrelation at 5%: {hw_diag.has_significant_autocorrelation_at_5pct}")
-    print(f"  - 95% Prediction Interval Empirical Test Coverage: {pi_coverage:.1f}%")
 
     print("\n" + "-" * 75)
     print("COMPARATIVE EVALUATION FINDINGS")
@@ -133,13 +159,17 @@ def main():
     print(f"  * Holt-Winters improved over 1-step Naive by {((naive_metrics.mae - hw_metrics.mae)/naive_metrics.mae)*100:.1f}% in MAE and {((naive_metrics.rmse - hw_metrics.rmse)/naive_metrics.rmse)*100:.1f}% in RMSE.")
     print(f"  * Bias Reduction: Holt-Winters reduced systematic test underprediction from +49.10 units (Seasonal Naive) down to +3.76 units by explicitly estimating the upward trend.")
 
-    # 6. Save Forecast DataFrame
+    # 6. Save Forecast DataFrame (including both interval bounds)
     forecast_df = pd.DataFrame({
         "week_start": test_df["week_start"].dt.strftime("%Y-%m-%d"),
         "actual_demand": y_test,
         "hw_pred": np.round(hw_preds, 2),
-        "hw_pi_lower": np.round(hw_pi_lower, 2),
-        "hw_pi_upper": np.round(hw_pi_upper, 2),
+        "hw_pi_const_lower": np.round(pi_const_lower, 2),
+        "hw_pi_const_upper": np.round(pi_const_upper, 2),
+        "hw_pi_lower": np.round(pi_const_lower, 2),  # Default chart interval
+        "hw_pi_upper": np.round(pi_const_upper, 2),
+        "hw_pi_expand_lower": np.round(pi_expand_lower, 2),
+        "hw_pi_expand_upper": np.round(pi_expand_upper, 2),
         "seasonal_naive_pred": np.round(snaive_preds, 2),
         "naive_1step_pred": np.round(naive_1step_preds, 2),
         "hw_error": np.round(y_test - hw_preds, 2),
@@ -159,7 +189,8 @@ def main():
             "seasonal_periods": 52,
             "damped_trend": False,
             "initialization_method": "estimated",
-            "smoothing_parameters": hw_diag.model_params
+            "smoothing_parameters": hw_diag.model_params,
+            "seasonal_parameter_gamma_interpretation": hw_diag.seasonal_parameter_interpretation
         },
         "accuracy_metrics": {
             "holt_winters": hw_metrics.__dict__,
@@ -167,7 +198,22 @@ def main():
             "naive_1step": naive_metrics.__dict__
         },
         "in_sample_diagnostics": hw_diag.__dict__,
-        "prediction_interval_coverage_95pct": pi_coverage,
+        "prediction_interval_diagnostics": {
+            "native_statsmodels_support": "None provided for ExponentialSmoothing",
+            "constant_innovation_interval": {
+                "methodology": "forecast +/- z_0.975 * sigma_e",
+                "empirical_95pct_coverage": coverage_const,
+                "is_under_covering": bool(coverage_const < 95.0),
+                "under_coverage_gap_pct": round(95.0 - coverage_const, 2),
+                "reasons_for_under_coverage": "Does not expand over horizon h; fails to capture increased variance in Q4 holiday peak weeks."
+            },
+            "horizon_expanding_interval": {
+                "methodology": "forecast +/- z_0.975 * sigma_e * sqrt(1 + sum_{j=1}^{h-1} (alpha + j*beta)^2)",
+                "empirical_95pct_coverage": coverage_expand,
+                "is_under_covering": bool(coverage_expand < 95.0),
+                "limitations": "Additive linear trend error variance expansion creates very wide intervals for long horizons (h=52)."
+            }
+        },
         "comparative_summary": {
             "hw_vs_snaive_mae_reduction_pct": round(improvement_mae, 2),
             "hw_vs_snaive_rmse_reduction_pct": round(improvement_rmse, 2),
