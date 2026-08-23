@@ -1,0 +1,54 @@
+{
+  "split_info": {
+    "total_complete_observations": 208,
+    "train_start_date": "2014-01-06",
+    "train_end_date": "2016-12-26",
+    "num_train_observations": 156,
+    "test_start_date": "2017-01-02",
+    "test_end_date": "2017-12-25",
+    "num_test_observations": 52,
+    "test_ratio": 0.25,
+    "partial_weeks_excluded_count": 1,
+    "partial_weeks_excluded": [
+      "2013-12-30"
+    ]
+  },
+  "naive_1step_metrics": {
+    "model_name": "Naive (Lag-1)",
+    "mae": 63.75,
+    "rmse": 84.39,
+    "mape": 30.93,
+    "smape": 27.86,
+    "mean_error": 0.25,
+    "max_error": 258.0,
+    "num_eval_points": 52,
+    "mape_applicable": true,
+    "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+  },
+  "seasonal_naive_metrics": {
+    "model_name": "Seasonal Naive (Lag-52)",
+    "mae": 65.63,
+    "rmse": 84.66,
+    "mape": 28.03,
+    "smape": 33.41,
+    "mean_error": 49.1,
+    "max_error": 242.0,
+    "num_eval_points": 52,
+    "mape_applicable": true,
+    "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+  },
+  "naive_fixed_metrics": {
+    "model_name": "Naive (Fixed Last Value)",
+    "mae": 85.12,
+    "rmse": 116.42,
+    "mape": 41.18,
+    "smape": 35.68,
+    "mean_error": 18.85,
+    "max_error": 344.0,
+    "num_eval_points": 52,
+    "mape_applicable": true,
+    "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+  },
+  "better_model_1step": "Naive (Lag-1)",
+  "better_model_summary": "Under 1-step rolling evaluation, Naive (Lag-1) achieved lower MAE (63.75 vs 65.63) and lower RMSE (84.39 vs 84.66) because it adapts immediately to the growing 2017 volume level. Seasonal Naive achieved lower MAPE (28.03% vs 30.93%) by matching the annual seasonal curve, but underpredicts overall due to the unmodeled +25.9% year-over-year upward trend."
+}
