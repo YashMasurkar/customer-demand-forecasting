@@ -1,0 +1,211 @@
+[
+  {
+    "order": [
+      0,
+      1,
+      2
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      52
+    ],
+    "trend": null,
+    "description": "MA(2) with Seasonal MA (0,1,2)(0,1,1,52)",
+    "converged": false,
+    "aic": 544.29,
+    "bic": 551.77,
+    "error_message": null
+  },
+  {
+    "order": [
+      1,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      52
+    ],
+    "trend": null,
+    "description": "ARMA(1,1) with Seasonal MA (1,1,1)(0,1,1,52)",
+    "converged": true,
+    "aic": 555.31,
+    "bic": 562.88,
+    "error_message": null
+  },
+  {
+    "order": [
+      0,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      52
+    ],
+    "trend": null,
+    "description": "Airline Seasonal MA (0,1,1)(0,1,1,52)",
+    "converged": true,
+    "aic": 555.95,
+    "bic": 561.62,
+    "error_message": null
+  },
+  {
+    "order": [
+      0,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      1,
+      1,
+      1,
+      52
+    ],
+    "trend": null,
+    "description": "MA(1) with Seasonal ARMA(1,1) (0,1,1)(1,1,1,52)",
+    "converged": true,
+    "aic": 556.9,
+    "bic": 564.47,
+    "error_message": null
+  },
+  {
+    "order": [
+      1,
+      0,
+      1
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      52
+    ],
+    "trend": "c",
+    "description": "ARMA(1,1) Level + Seasonal MA + Constant",
+    "converged": true,
+    "aic": 563.98,
+    "bic": 573.54,
+    "error_message": null
+  },
+  {
+    "order": [
+      1,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      1,
+      1,
+      0,
+      52
+    ],
+    "trend": null,
+    "description": "ARMA(1,1) with Seasonal AR (1,1,1)(1,1,0,52)",
+    "converged": true,
+    "aic": 566.11,
+    "bic": 573.76,
+    "error_message": null
+  },
+  {
+    "order": [
+      1,
+      0,
+      0
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      52
+    ],
+    "trend": "c",
+    "description": "AR(1) Level + Seasonal MA + Constant",
+    "converged": true,
+    "aic": 572.7,
+    "bic": 580.43,
+    "error_message": null
+  },
+  {
+    "order": [
+      0,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      1,
+      1,
+      0,
+      52
+    ],
+    "trend": null,
+    "description": "MA(1) with Seasonal AR (0,1,1)(1,1,0,52)",
+    "converged": true,
+    "aic": 577.64,
+    "bic": 583.44,
+    "error_message": null
+  },
+  {
+    "order": [
+      2,
+      1,
+      0
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      52
+    ],
+    "trend": null,
+    "description": "AR(2) with Seasonal MA (2,1,0)(0,1,1,52)",
+    "converged": true,
+    "aic": 582.38,
+    "bic": 590.03,
+    "error_message": null
+  },
+  {
+    "order": [
+      1,
+      1,
+      0
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      52
+    ],
+    "trend": null,
+    "description": "AR(1) with Seasonal MA (1,1,0)(0,1,1,52)",
+    "converged": true,
+    "aic": 586.22,
+    "bic": 591.95,
+    "error_message": null
+  },
+  {
+    "order": [
+      0,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      0,
+      52
+    ],
+    "trend": null,
+    "description": "MA(1) with Pure Seasonal Diff (0,1,1)(0,1,0,52)",
+    "converged": true,
+    "aic": 1145.48,
+    "bic": 1150.71,
+    "error_message": null
+  }
+]

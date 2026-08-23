@@ -1,0 +1,139 @@
+{
+  "split_info": {
+    "total_complete_observations": 208,
+    "train_start_date": "2014-01-06",
+    "train_end_date": "2016-12-26",
+    "num_train_observations": 156,
+    "test_start_date": "2017-01-02",
+    "test_end_date": "2017-12-25",
+    "num_test_observations": 52,
+    "test_ratio": 0.25,
+    "partial_weeks_excluded_count": 1,
+    "partial_weeks_excluded": [
+      "2013-12-30"
+    ]
+  },
+  "selected_configuration": {
+    "order": [
+      0,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      52
+    ],
+    "trend": null,
+    "training_aic": 555.95,
+    "training_bic": 561.62
+  },
+  "accuracy_metrics": {
+    "sarima": {
+      "model_name": "SARIMA(0, 1, 1)(0, 1, 1, 52)",
+      "mae": 46.49,
+      "rmse": 59.68,
+      "mape": 20.86,
+      "smape": 20.76,
+      "mean_error": 20.97,
+      "max_error": 191.88,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "holt_winters": {
+      "model_name": "Holt-Winters (Add Trend, Add Season)",
+      "mae": 39.02,
+      "rmse": 52.4,
+      "mape": 19.24,
+      "smape": 17.4,
+      "mean_error": 3.76,
+      "max_error": 164.03,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "seasonal_naive": {
+      "model_name": "Seasonal Naive (Lag-52)",
+      "mae": 65.63,
+      "rmse": 84.66,
+      "mape": 28.03,
+      "smape": 33.41,
+      "mean_error": 49.1,
+      "max_error": 242.0,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "naive_1step": {
+      "model_name": "Naive (Lag-1)",
+      "mae": 63.75,
+      "rmse": 84.39,
+      "mape": 30.93,
+      "smape": 27.86,
+      "mean_error": 0.25,
+      "max_error": 258.0,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    }
+  },
+  "prediction_interval_diagnostics": {
+    "methodology": "Native SARIMAX state-space Kalman filter prediction interval",
+    "empirical_95pct_coverage": 96.15384615384616,
+    "average_interval_width": 262.02,
+    "min_interval_width": 226.79,
+    "max_interval_width": 272.4,
+    "coverage_vs_width_discussion": "Achieves 96.2% empirical coverage on test set with 262.0 unit average width."
+  },
+  "in_sample_diagnostics": {
+    "residual_mean": 10.36,
+    "residual_std": 65.8,
+    "residual_variance": 4330.25,
+    "residual_skewness": 0.2384,
+    "residual_kurtosis": 0.3549,
+    "ljung_box_results": {
+      "lag_5": {
+        "statistic": 7.6482,
+        "p_value": 0.1767
+      },
+      "lag_10": {
+        "statistic": 9.2591,
+        "p_value": 0.5077
+      },
+      "lag_15": {
+        "statistic": 12.4812,
+        "p_value": 0.6423
+      },
+      "lag_20": {
+        "statistic": 15.414,
+        "p_value": 0.7523
+      }
+    },
+    "has_significant_autocorrelation_at_5pct": false,
+    "aic": 555.95,
+    "bic": 561.62,
+    "converged": true,
+    "order": [
+      0,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      52
+    ],
+    "trend": null
+  },
+  "comparative_decision": {
+    "outcome": "Outcome C: SARIMA performs worse than Holt-Winters",
+    "current_best_model": "Holt-Winters (Add Trend, Add Seasonality)",
+    "mae_comparison": "SARIMA MAE = 46.49 vs Holt-Winters MAE = 39.02",
+    "rmse_comparison": "SARIMA RMSE = 59.68 vs Holt-Winters RMSE = 52.40",
+    "bias_comparison": "SARIMA Bias = +20.97 vs Holt-Winters Bias = +3.76",
+    "recommendation": "Retain Holt-Winters as the primary statistical baseline model."
+  }
+}
