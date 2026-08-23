@@ -51,14 +51,16 @@ def get_forward_forecast(
     context = get_cached_analytics_context()
     f_prod = context.forward_forecast
 
+    from src.analytics.engine import _resolve_project_path
+
     # Load forward production CSV
-    forward_csv_path = Path("reports/forward_production_forecasts.csv")
+    forward_csv_path = _resolve_project_path("reports/forward_production_forecasts.csv")
     if forward_csv_path.exists():
         df_forward = pd.read_csv(forward_csv_path)
     else:
         # Fallback to generating on the fly if needed
         from src.analytics.engine import generate_forward_production_forecast
-        weekly_df = pd.read_csv("data/processed/weekly_demand.csv")
+        weekly_df = pd.read_csv(_resolve_project_path("data/processed/weekly_demand.csv"))
         _, df_forward = generate_forward_production_forecast(weekly_df, horizon=52)
 
     # Slice by requested horizon

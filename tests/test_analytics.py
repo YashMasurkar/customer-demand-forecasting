@@ -27,7 +27,9 @@ from src.analytics.engine import (
     detect_demand_anomalies,
     generate_forward_production_forecast,
     build_business_analytics_context,
-    calculate_filtered_performance_analytics
+    calculate_filtered_performance_analytics,
+    _resolve_project_path,
+    PROJECT_ROOT
 )
 
 
@@ -260,4 +262,32 @@ def test_calculate_filtered_performance_analytics_various_combinations(sample_ra
     assert res_comb.filtered_kpis.total_profit == pytest.approx(18983.80, abs=1.0)
     assert res_comb.filtered_kpis.total_orders == 177
     assert res_comb.filtered_kpis.profit_margin_pct == pytest.approx(19.78, abs=0.1)
+
+
+def test_resolve_project_path_behavior(tmp_path):
+    """Verify _resolve_project_path anchors relative paths to PROJECT_ROOT and preserves absolute paths."""
+    # Relative path resolution
+    resolved_rel = _resolve_project_path("data/raw/Sample_Superstore.csv")
+    assert resolved_rel == PROJECT_ROOT / "data" / "raw" / "Sample_Superstore.csv"
+    assert resolved_rel.is_absolute()
+
+    # Absolute path preservation
+    custom_abs = (tmp_path / "custom_data.csv").resolve()
+    resolved_abs = _resolve_project_path(custom_abs)
+    assert resolved_abs == custom_abs
+    assert resolved_abs.is_absolute()
+
+
+def test_build_business_analytics_context_from_arbitrary_working_directory(tmp_path, monkeypatch):
+    """Verify build_business_analytics_context succeeds when executed from a different working directory."""
+    # Switch working directory to an arbitrary temporary directory
+    monkeypatch.chdir(tmp_path)
+    assert Path.cwd() == tmp_path
+
+    # Context generation must resolve paths relative to PROJECT_ROOT without FileNotFoundError
+    ctx = build_business_analytics_context()
+    assert isinstance(ctx, BusinessAnalyticsContext)
+    assert ctx.historical_kpis.total_quantity == 37873
+    assert ctx.forward_forecast.annual_forecast_total == pytest.approx(16266.75, abs=5.0)
+
 

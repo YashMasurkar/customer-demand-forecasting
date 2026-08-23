@@ -27,6 +27,17 @@ from src.analytics.schemas import (
 )
 from src.models.holt_winters import HoltWintersForecaster
 
+# Project Root directory determined relative to this file location (2 levels up from src/analytics/)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+
+def _resolve_project_path(path: Path | str) -> Path:
+    """Resolve relative path against PROJECT_ROOT, preserving absolute paths."""
+    path_obj = Path(path)
+    if path_obj.is_absolute():
+        return path_obj
+    return PROJECT_ROOT / path_obj
+
 
 def calculate_safe_growth(
     current: float,
@@ -502,9 +513,10 @@ def build_business_analytics_context(
     Returns:
         BusinessAnalyticsContext master Pydantic object.
     """
-    raw_path = Path(raw_df_path)
-    weekly_path = Path(weekly_df_path)
-    rep_dir = Path(reports_dir)
+    raw_path = _resolve_project_path(raw_df_path)
+    weekly_path = _resolve_project_path(weekly_df_path)
+    rep_dir = _resolve_project_path(reports_dir)
+    rep_dir.mkdir(parents=True, exist_ok=True)
 
     raw_df = pd.read_csv(raw_path, encoding="windows-1252")
     weekly_df = pd.read_csv(weekly_path)

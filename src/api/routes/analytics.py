@@ -102,7 +102,9 @@ def get_cached_raw_df():
     global _CACHED_RAW_DF
     if _CACHED_RAW_DF is None:
         import pandas as pd
-        _CACHED_RAW_DF = pd.read_csv("data/raw/Sample_Superstore.csv", encoding="windows-1252")
+        from src.analytics.engine import _resolve_project_path
+        raw_path = _resolve_project_path("data/raw/Sample_Superstore.csv")
+        _CACHED_RAW_DF = pd.read_csv(raw_path, encoding="windows-1252")
         _CACHED_RAW_DF["Order_Year"] = pd.to_datetime(_CACHED_RAW_DF["Order Date"]).dt.year
     return _CACHED_RAW_DF
 

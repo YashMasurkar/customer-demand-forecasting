@@ -325,3 +325,24 @@ def test_no_api_keys_exposed_in_any_endpoint(client: TestClient):
         assert "AIzaSy" not in text
         assert "LLM_API_KEY" not in text
 
+
+def test_api_endpoints_work_from_arbitrary_working_directory(client: TestClient, tmp_path, monkeypatch):
+    """Verify all critical API routes succeed when process CWD is not the project root."""
+    monkeypatch.chdir(tmp_path)
+
+    # 1. Dashboard summary
+    resp_dash = client.get("/api/dashboard")
+    assert resp_dash.status_code == 200
+    assert resp_dash.json()["historical_kpis"]["total_quantity"] == 37873
+
+    # 2. Forward forecast
+    resp_fc = client.get("/api/forecast?horizon=52")
+    assert resp_fc.status_code == 200
+    assert resp_fc.json()["total_forecast_quantity"] > 0
+
+    # 3. Filtered performance
+    resp_perf = client.get("/api/performance?year=2017&category=Technology")
+    assert resp_perf.status_code == 200
+    assert resp_perf.json()["record_count"] > 0
+
+
