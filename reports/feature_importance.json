@@ -1,0 +1,182 @@
+[
+  {
+    "feature_name": "month",
+    "importance_value": 7.76954,
+    "rank": 1
+  },
+  {
+    "feature_name": "trend_index",
+    "importance_value": 7.47854,
+    "rank": 2
+  },
+  {
+    "feature_name": "lag_52_order_count",
+    "importance_value": 7.4024,
+    "rank": 3
+  },
+  {
+    "feature_name": "lag_52_qty_office_supplies",
+    "importance_value": 7.00313,
+    "rank": 4
+  },
+  {
+    "feature_name": "quarter",
+    "importance_value": 6.61491,
+    "rank": 5
+  },
+  {
+    "feature_name": "lag_52",
+    "importance_value": 5.44853,
+    "rank": 6
+  },
+  {
+    "feature_name": "lag_2",
+    "importance_value": 5.09204,
+    "rank": 7
+  },
+  {
+    "feature_name": "lag_1_qty_east",
+    "importance_value": 4.84067,
+    "rank": 8
+  },
+  {
+    "feature_name": "lag_52_sales",
+    "importance_value": 4.81774,
+    "rank": 9
+  },
+  {
+    "feature_name": "week_of_year_feat",
+    "importance_value": 4.75508,
+    "rank": 10
+  },
+  {
+    "feature_name": "lag_1_qty_technology",
+    "importance_value": 4.34962,
+    "rank": 11
+  },
+  {
+    "feature_name": "lag_1_qty_office_supplies",
+    "importance_value": 4.30439,
+    "rank": 12
+  },
+  {
+    "feature_name": "lag_1_qty_furniture",
+    "importance_value": 3.5928,
+    "rank": 13
+  },
+  {
+    "feature_name": "lag_26",
+    "importance_value": 3.29687,
+    "rank": 14
+  },
+  {
+    "feature_name": "lag_52_qty_furniture",
+    "importance_value": 3.28198,
+    "rank": 15
+  },
+  {
+    "feature_name": "sin_woy",
+    "importance_value": 3.17995,
+    "rank": 16
+  },
+  {
+    "feature_name": "rolling_std_13",
+    "importance_value": 2.91664,
+    "rank": 17
+  },
+  {
+    "feature_name": "lag_13",
+    "importance_value": 2.88763,
+    "rank": 18
+  },
+  {
+    "feature_name": "lag_1",
+    "importance_value": 2.69892,
+    "rank": 19
+  },
+  {
+    "feature_name": "cos_woy",
+    "importance_value": 2.27816,
+    "rank": 20
+  },
+  {
+    "feature_name": "lag_1_transaction_count",
+    "importance_value": 2.24155,
+    "rank": 21
+  },
+  {
+    "feature_name": "rolling_mean_13",
+    "importance_value": 2.07703,
+    "rank": 22
+  },
+  {
+    "feature_name": "lag_1_sales",
+    "importance_value": 2.07083,
+    "rank": 23
+  },
+  {
+    "feature_name": "lag_1_qty_central",
+    "importance_value": 1.79014,
+    "rank": 24
+  },
+  {
+    "feature_name": "lag_1_unique_customers",
+    "importance_value": 1.77323,
+    "rank": 25
+  },
+  {
+    "feature_name": "rolling_std_4",
+    "importance_value": 1.69132,
+    "rank": 26
+  },
+  {
+    "feature_name": "lag_8",
+    "importance_value": 1.45146,
+    "rank": 27
+  },
+  {
+    "feature_name": "lag_1_order_count",
+    "importance_value": 1.34418,
+    "rank": 28
+  },
+  {
+    "feature_name": "lag_1_qty_south",
+    "importance_value": 1.26832,
+    "rank": 29
+  },
+  {
+    "feature_name": "lag_52_qty_technology",
+    "importance_value": 1.26002,
+    "rank": 30
+  },
+  {
+    "feature_name": "lag_4",
+    "importance_value": 1.22965,
+    "rank": 31
+  },
+  {
+    "feature_name": "lag_1_profit",
+    "importance_value": 0.81498,
+    "rank": 32
+  },
+  {
+    "feature_name": "rolling_mean_4",
+    "importance_value": 0.70532,
+    "rank": 33
+  },
+  {
+    "feature_name": "rolling_mean_8",
+    "importance_value": 0.55163,
+    "rank": 34
+  },
+  {
+    "feature_name": "lag_1_avg_discount",
+    "importance_value": 0.18393,
+    "rank": 35
+  },
+  {
+    "feature_name": "lag_1_qty_west",
+    "importance_value": 0.01696,
+    "rank": 36
+  }
+]

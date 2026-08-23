@@ -1,0 +1,385 @@
+{
+  "phase": "Phase 6 \u2014 Machine Learning Forecasting",
+  "training_samples": 105,
+  "test_samples": 52,
+  "num_features": 36,
+  "cv_results": [
+    {
+      "model_name": "HistGradientBoosting",
+      "cv_maes": [
+        41.04,
+        42.86,
+        56.28,
+        57.81
+      ],
+      "cv_rmses": [
+        71.54,
+        62.28,
+        61.5,
+        70.49
+      ],
+      "mean_cv_mae": 49.5,
+      "mean_cv_rmse": 66.45,
+      "std_cv_mae": 8.77,
+      "std_cv_rmse": 5.3
+    },
+    {
+      "model_name": "Random Forest (max_depth=4)",
+      "cv_maes": [
+        47.3,
+        49.12,
+        50.82,
+        51.46
+      ],
+      "cv_rmses": [
+        76.86,
+        66.34,
+        57.12,
+        68.14
+      ],
+      "mean_cv_mae": 49.68,
+      "mean_cv_rmse": 67.12,
+      "std_cv_mae": 1.86,
+      "std_cv_rmse": 8.09
+    },
+    {
+      "model_name": "Random Forest (max_depth=6)",
+      "cv_maes": [
+        47.26,
+        48.83,
+        52.51,
+        50.33
+      ],
+      "cv_rmses": [
+        76.83,
+        66.27,
+        58.78,
+        65.98
+      ],
+      "mean_cv_mae": 49.73,
+      "mean_cv_rmse": 66.96,
+      "std_cv_mae": 2.23,
+      "std_cv_rmse": 7.44
+    },
+    {
+      "model_name": "Gradient Boosting (depth=3)",
+      "cv_maes": [
+        40.79,
+        54.24,
+        53.6,
+        58.92
+      ],
+      "cv_rmses": [
+        70.93,
+        68.42,
+        59.94,
+        75.92
+      ],
+      "mean_cv_mae": 51.89,
+      "mean_cv_rmse": 68.8,
+      "std_cv_mae": 7.77,
+      "std_cv_rmse": 6.68
+    },
+    {
+      "model_name": "Ridge Regression (alpha=100.0)",
+      "cv_maes": [
+        46.47,
+        59.2,
+        51.25,
+        57.52
+      ],
+      "cv_rmses": [
+        68.99,
+        76.22,
+        58.22,
+        77.53
+      ],
+      "mean_cv_mae": 53.61,
+      "mean_cv_rmse": 70.24,
+      "std_cv_mae": 5.86,
+      "std_cv_rmse": 8.85
+    },
+    {
+      "model_name": "Ridge Regression (alpha=10.0)",
+      "cv_maes": [
+        47.62,
+        69.26,
+        53.17,
+        56.28
+      ],
+      "cv_rmses": [
+        69.94,
+        81.79,
+        63.93,
+        78.98
+      ],
+      "mean_cv_mae": 56.58,
+      "mean_cv_rmse": 73.66,
+      "std_cv_mae": 9.18,
+      "std_cv_rmse": 8.23
+    },
+    {
+      "model_name": "Ridge Regression (alpha=1.0)",
+      "cv_maes": [
+        60.38,
+        74.62,
+        54.09,
+        67.24
+      ],
+      "cv_rmses": [
+        86.49,
+        89.54,
+        73.79,
+        85.52
+      ],
+      "mean_cv_mae": 64.08,
+      "mean_cv_rmse": 83.84,
+      "std_cv_mae": 8.84,
+      "std_cv_rmse": 6.91
+    },
+    {
+      "model_name": "Linear Regression (OLS)",
+      "cv_maes": [
+        118.22,
+        298.13,
+        81.83,
+        69.15
+      ],
+      "cv_rmses": [
+        143.99,
+        333.55,
+        103.34,
+        84.9
+      ],
+      "mean_cv_mae": 141.83,
+      "mean_cv_rmse": 166.44,
+      "std_cv_mae": 106.25,
+      "std_cv_rmse": 114.11
+    }
+  ],
+  "test_evaluation_ml_models": {
+    "HistGradientBoosting": {
+      "model_name": "HistGradientBoosting",
+      "mae": 71.17,
+      "rmse": 87.88,
+      "mape": 30.29,
+      "smape": 31.86,
+      "mean_error": 32.43,
+      "max_error": 273.28,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "Random Forest (max_depth=4)": {
+      "model_name": "Random Forest (max_depth=4)",
+      "mae": 68.1,
+      "rmse": 86.49,
+      "mape": 27.85,
+      "smape": 28.68,
+      "mean_error": 34.09,
+      "max_error": 268.44,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "Random Forest (max_depth=6)": {
+      "model_name": "Random Forest (max_depth=6)",
+      "mae": 67.76,
+      "rmse": 86.9,
+      "mape": 27.8,
+      "smape": 28.45,
+      "mean_error": 32.93,
+      "max_error": 269.66,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "Gradient Boosting (depth=3)": {
+      "model_name": "Gradient Boosting (depth=3)",
+      "mae": 63.25,
+      "rmse": 81.61,
+      "mape": 26.38,
+      "smape": 26.26,
+      "mean_error": 25.03,
+      "max_error": 259.14,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "Ridge Regression (alpha=100.0)": {
+      "model_name": "Ridge Regression (alpha=100.0)",
+      "mae": 50.02,
+      "rmse": 66.79,
+      "mape": 22.5,
+      "smape": 21.28,
+      "mean_error": 14.65,
+      "max_error": 207.71,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "Ridge Regression (alpha=10.0)": {
+      "model_name": "Ridge Regression (alpha=10.0)",
+      "mae": 52.01,
+      "rmse": 65.66,
+      "mape": 24.22,
+      "smape": 22.25,
+      "mean_error": 4.64,
+      "max_error": 185.57,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "Ridge Regression (alpha=1.0)": {
+      "model_name": "Ridge Regression (alpha=1.0)",
+      "mae": 57.28,
+      "rmse": 69.92,
+      "mape": 27.04,
+      "smape": 24.32,
+      "mean_error": -1.06,
+      "max_error": 178.19,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "Linear Regression (OLS)": {
+      "model_name": "Linear Regression (OLS)",
+      "mae": 60.35,
+      "rmse": 79.84,
+      "mape": 27.52,
+      "smape": 25.07,
+      "mean_error": 2.92,
+      "max_error": 216.04,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    }
+  },
+  "master_benchmark_comparison": {
+    "holt_winters": {
+      "model_name": "Holt-Winters (Add Trend, Add Season)",
+      "mae": 39.02,
+      "rmse": 52.4,
+      "mape": 19.24,
+      "smape": 17.4,
+      "mean_error": 3.76,
+      "max_error": 164.03,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "sarima": {
+      "model_name": "SARIMA(0, 1, 1)(0, 1, 1, 52)",
+      "mae": 46.49,
+      "rmse": 59.68,
+      "mape": 20.86,
+      "smape": 20.76,
+      "mean_error": 20.97,
+      "max_error": 191.88,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "best_ml_model": {
+      "name": "Ridge Regression (alpha=100.0)",
+      "metrics": {
+        "model_name": "Ridge Regression (alpha=100.0)",
+        "mae": 50.02,
+        "rmse": 66.79,
+        "mape": 22.5,
+        "smape": 21.28,
+        "mean_error": 14.65,
+        "max_error": 207.71,
+        "num_eval_points": 52,
+        "mape_applicable": true,
+        "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+      }
+    },
+    "seasonal_naive": {
+      "model_name": "Seasonal Naive (Lag-52)",
+      "mae": 65.63,
+      "rmse": 84.66,
+      "mape": 28.03,
+      "smape": 33.41,
+      "mean_error": 49.1,
+      "max_error": 242.0,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "naive_1step": {
+      "model_name": "Naive (Lag-1)",
+      "mae": 63.75,
+      "rmse": 84.39,
+      "mape": 30.93,
+      "smape": 27.86,
+      "mean_error": 0.25,
+      "max_error": 258.0,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    }
+  },
+  "feature_importance_top10": [
+    {
+      "feature_name": "month",
+      "importance_value": 7.76954,
+      "rank": 1
+    },
+    {
+      "feature_name": "trend_index",
+      "importance_value": 7.47854,
+      "rank": 2
+    },
+    {
+      "feature_name": "lag_52_order_count",
+      "importance_value": 7.4024,
+      "rank": 3
+    },
+    {
+      "feature_name": "lag_52_qty_office_supplies",
+      "importance_value": 7.00313,
+      "rank": 4
+    },
+    {
+      "feature_name": "quarter",
+      "importance_value": 6.61491,
+      "rank": 5
+    },
+    {
+      "feature_name": "lag_52",
+      "importance_value": 5.44853,
+      "rank": 6
+    },
+    {
+      "feature_name": "lag_2",
+      "importance_value": 5.09204,
+      "rank": 7
+    },
+    {
+      "feature_name": "lag_1_qty_east",
+      "importance_value": 4.84067,
+      "rank": 8
+    },
+    {
+      "feature_name": "lag_52_sales",
+      "importance_value": 4.81774,
+      "rank": 9
+    },
+    {
+      "feature_name": "week_of_year_feat",
+      "importance_value": 4.75508,
+      "rank": 10
+    }
+  ],
+  "decision_outcome": {
+    "outcome": "Outcome C: Machine Learning performs worse than Holt-Winters and SARIMA",
+    "current_best_model": "Holt-Winters (Add Trend, Add Seasonality)",
+    "accuracy_gap_vs_holt_winters": {
+      "mae_gap": 11.0,
+      "rmse_gap": 14.39,
+      "conclusion": "Holt-Winters is +22.0% more accurate than the best ML model (Ridge) and +41.0% more accurate than Tree Ensembles."
+    },
+    "tree_model_underperformance_cause": "Tree-based ensembles (Random Forest, Gradient Boosting) are piecewise-constant step functions bounded by training targets and fail to extrapolate the +25.9% YoY upward volume growth into 2017, causing substantial underprediction bias (+25 to +34 units)."
+  }
+}

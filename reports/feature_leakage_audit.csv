@@ -1,0 +1,43 @@
+Feature,Category,Shift/Window,Temporal Class,Status,Rationale
+trend_index,Temporal,Calendar,Known at forecast time,ALLOWED,"Linear time index (0, 1, ...) deterministic and known in advance."
+month,Temporal,Calendar,Known at forecast time,ALLOWED,Calendar month (1-12) known in advance.
+quarter,Temporal,Calendar,Known at forecast time,ALLOWED,Calendar quarter (1-4) known in advance.
+week_of_year_feat,Temporal,Calendar,Known at forecast time,ALLOWED,ISO week number (1-53) known in advance.
+sin_woy,Temporal,Calendar,Known at forecast time,ALLOWED,Sinusoidal annual cyclical encoding known in advance.
+cos_woy,Temporal,Calendar,Known at forecast time,ALLOWED,Cosinesoidal annual cyclical encoding known in advance.
+lag_1,Target Lag,Shift -1,Historical (t-1),ALLOWED,"Prior week actual demand, fully observed at prediction time."
+lag_2,Target Lag,Shift -2,Historical (t-2),ALLOWED,Observed 2 weeks prior.
+lag_4,Target Lag,Shift -4,Historical (t-4),ALLOWED,Observed 4 weeks prior.
+lag_8,Target Lag,Shift -8,Historical (t-8),ALLOWED,Observed 8 weeks prior.
+lag_13,Target Lag,Shift -13,Historical (t-13),ALLOWED,Observed 13 weeks (1 quarter) prior.
+lag_26,Target Lag,Shift -26,Historical (t-26),ALLOWED,Observed 26 weeks (half year) prior.
+lag_52,Target Lag,Shift -52,Historical (t-52),ALLOWED,Observed 52 weeks (1 full year) prior for annual seasonal matching.
+rolling_mean_4,Rolling Target,"Shift -1, Win 4",Historical (t-4 to t-1),ALLOWED,4-week moving average computed strictly on lagged values y_{t-1}..y_{t-4}; excludes y_t.
+rolling_mean_8,Rolling Target,"Shift -1, Win 8",Historical (t-8 to t-1),ALLOWED,8-week moving average computed strictly on lagged values; excludes y_t.
+rolling_mean_13,Rolling Target,"Shift -1, Win 13",Historical (t-13 to t-1),ALLOWED,13-week moving average computed strictly on lagged values; excludes y_t.
+rolling_std_4,Rolling Target,"Shift -1, Win 4",Historical (t-4 to t-1),ALLOWED,4-week demand standard deviation on lagged values; excludes y_t.
+rolling_std_13,Rolling Target,"Shift -1, Win 13",Historical (t-13 to t-1),ALLOWED,13-week demand volatility on lagged values; excludes y_t.
+lag_1_sales,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week total sales revenue observed at prediction time.
+lag_52_sales,Business Lag,Shift -52,Historical (t-52),ALLOWED,Prior year same-week sales revenue observed at prediction time.
+lag_1_profit,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week total profit observed at prediction time.
+lag_1_avg_discount,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week average discount observed at prediction time.
+lag_1_order_count,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week unique order count observed at prediction time.
+lag_52_order_count,Business Lag,Shift -52,Historical (t-52),ALLOWED,Prior year same-week order count observed at prediction time.
+lag_1_transaction_count,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week transaction line item volume.
+lag_1_unique_customers,Business Lag,Shift -1,Historical (t-1),ALLOWED,Prior week unique customer count.
+lag_1_qty_furniture,Category Lag,Shift -1,Historical (t-1),ALLOWED,Prior week Furniture demand volume.
+lag_52_qty_furniture,Category Lag,Shift -52,Historical (t-52),ALLOWED,Prior year same-week Furniture demand volume.
+lag_1_qty_office_supplies,Category Lag,Shift -1,Historical (t-1),ALLOWED,Prior week Office Supplies volume.
+lag_52_qty_office_supplies,Category Lag,Shift -52,Historical (t-52),ALLOWED,Prior year same-week Office Supplies volume.
+lag_1_qty_technology,Category Lag,Shift -1,Historical (t-1),ALLOWED,Prior week Technology volume.
+lag_52_qty_technology,Category Lag,Shift -52,Historical (t-52),ALLOWED,Prior year same-week Technology volume.
+lag_1_qty_central,Regional Lag,Shift -1,Historical (t-1),ALLOWED,Prior week Central region volume.
+lag_1_qty_east,Regional Lag,Shift -1,Historical (t-1),ALLOWED,Prior week East region volume.
+lag_1_qty_south,Regional Lag,Shift -1,Historical (t-1),ALLOWED,Prior week South region volume.
+lag_1_qty_west,Regional Lag,Shift -1,Historical (t-1),ALLOWED,Prior week West region volume.
+current_week_sales (sales),Business Contemporaneous,Shift 0,Contemporaneous (week t),PROHIBITED (EXCLUDED),Total sales in week t is not known until week t ends. Using it to forecast week t demand is future leakage.
+current_week_profit (profit),Business Contemporaneous,Shift 0,Contemporaneous (week t),PROHIBITED (EXCLUDED),Profit in week t is unknown at forecast creation.
+current_week_discount (avg_discount),Business Contemporaneous,Shift 0,Contemporaneous (week t),PROHIBITED (EXCLUDED),Average realized discount in week t is unknown at forecast time.
+current_week_orders (order_count),Business Contemporaneous,Shift 0,Contemporaneous (week t),PROHIBITED (EXCLUDED),Total order count in week t is unknown at forecast time.
+current_week_customers (unique_customers),Business Contemporaneous,Shift 0,Contemporaneous (week t),PROHIBITED (EXCLUDED),Customer count in week t is unknown at forecast time.
+current_week_category_qtys,Category Contemporaneous,Shift 0,Contemporaneous (week t),PROHIBITED (EXCLUDED),Category quantities sum directly to target quantity. Using contemporaneous category quantities is trivial label leakage.

@@ -1,0 +1,338 @@
+[
+  {
+    "Feature": "trend_index",
+    "Category": "Temporal",
+    "Shift/Window": "Calendar",
+    "Temporal Class": "Known at forecast time",
+    "Status": "ALLOWED",
+    "Rationale": "Linear time index (0, 1, ...) deterministic and known in advance."
+  },
+  {
+    "Feature": "month",
+    "Category": "Temporal",
+    "Shift/Window": "Calendar",
+    "Temporal Class": "Known at forecast time",
+    "Status": "ALLOWED",
+    "Rationale": "Calendar month (1-12) known in advance."
+  },
+  {
+    "Feature": "quarter",
+    "Category": "Temporal",
+    "Shift/Window": "Calendar",
+    "Temporal Class": "Known at forecast time",
+    "Status": "ALLOWED",
+    "Rationale": "Calendar quarter (1-4) known in advance."
+  },
+  {
+    "Feature": "week_of_year_feat",
+    "Category": "Temporal",
+    "Shift/Window": "Calendar",
+    "Temporal Class": "Known at forecast time",
+    "Status": "ALLOWED",
+    "Rationale": "ISO week number (1-53) known in advance."
+  },
+  {
+    "Feature": "sin_woy",
+    "Category": "Temporal",
+    "Shift/Window": "Calendar",
+    "Temporal Class": "Known at forecast time",
+    "Status": "ALLOWED",
+    "Rationale": "Sinusoidal annual cyclical encoding known in advance."
+  },
+  {
+    "Feature": "cos_woy",
+    "Category": "Temporal",
+    "Shift/Window": "Calendar",
+    "Temporal Class": "Known at forecast time",
+    "Status": "ALLOWED",
+    "Rationale": "Cosinesoidal annual cyclical encoding known in advance."
+  },
+  {
+    "Feature": "lag_1",
+    "Category": "Target Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week actual demand, fully observed at prediction time."
+  },
+  {
+    "Feature": "lag_2",
+    "Category": "Target Lag",
+    "Shift/Window": "Shift -2",
+    "Temporal Class": "Historical (t-2)",
+    "Status": "ALLOWED",
+    "Rationale": "Observed 2 weeks prior."
+  },
+  {
+    "Feature": "lag_4",
+    "Category": "Target Lag",
+    "Shift/Window": "Shift -4",
+    "Temporal Class": "Historical (t-4)",
+    "Status": "ALLOWED",
+    "Rationale": "Observed 4 weeks prior."
+  },
+  {
+    "Feature": "lag_8",
+    "Category": "Target Lag",
+    "Shift/Window": "Shift -8",
+    "Temporal Class": "Historical (t-8)",
+    "Status": "ALLOWED",
+    "Rationale": "Observed 8 weeks prior."
+  },
+  {
+    "Feature": "lag_13",
+    "Category": "Target Lag",
+    "Shift/Window": "Shift -13",
+    "Temporal Class": "Historical (t-13)",
+    "Status": "ALLOWED",
+    "Rationale": "Observed 13 weeks (1 quarter) prior."
+  },
+  {
+    "Feature": "lag_26",
+    "Category": "Target Lag",
+    "Shift/Window": "Shift -26",
+    "Temporal Class": "Historical (t-26)",
+    "Status": "ALLOWED",
+    "Rationale": "Observed 26 weeks (half year) prior."
+  },
+  {
+    "Feature": "lag_52",
+    "Category": "Target Lag",
+    "Shift/Window": "Shift -52",
+    "Temporal Class": "Historical (t-52)",
+    "Status": "ALLOWED",
+    "Rationale": "Observed 52 weeks (1 full year) prior for annual seasonal matching."
+  },
+  {
+    "Feature": "rolling_mean_4",
+    "Category": "Rolling Target",
+    "Shift/Window": "Shift -1, Win 4",
+    "Temporal Class": "Historical (t-4 to t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "4-week moving average computed strictly on lagged values y_{t-1}..y_{t-4}; excludes y_t."
+  },
+  {
+    "Feature": "rolling_mean_8",
+    "Category": "Rolling Target",
+    "Shift/Window": "Shift -1, Win 8",
+    "Temporal Class": "Historical (t-8 to t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "8-week moving average computed strictly on lagged values; excludes y_t."
+  },
+  {
+    "Feature": "rolling_mean_13",
+    "Category": "Rolling Target",
+    "Shift/Window": "Shift -1, Win 13",
+    "Temporal Class": "Historical (t-13 to t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "13-week moving average computed strictly on lagged values; excludes y_t."
+  },
+  {
+    "Feature": "rolling_std_4",
+    "Category": "Rolling Target",
+    "Shift/Window": "Shift -1, Win 4",
+    "Temporal Class": "Historical (t-4 to t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "4-week demand standard deviation on lagged values; excludes y_t."
+  },
+  {
+    "Feature": "rolling_std_13",
+    "Category": "Rolling Target",
+    "Shift/Window": "Shift -1, Win 13",
+    "Temporal Class": "Historical (t-13 to t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "13-week demand volatility on lagged values; excludes y_t."
+  },
+  {
+    "Feature": "lag_1_sales",
+    "Category": "Business Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week total sales revenue observed at prediction time."
+  },
+  {
+    "Feature": "lag_52_sales",
+    "Category": "Business Lag",
+    "Shift/Window": "Shift -52",
+    "Temporal Class": "Historical (t-52)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior year same-week sales revenue observed at prediction time."
+  },
+  {
+    "Feature": "lag_1_profit",
+    "Category": "Business Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week total profit observed at prediction time."
+  },
+  {
+    "Feature": "lag_1_avg_discount",
+    "Category": "Business Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week average discount observed at prediction time."
+  },
+  {
+    "Feature": "lag_1_order_count",
+    "Category": "Business Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week unique order count observed at prediction time."
+  },
+  {
+    "Feature": "lag_52_order_count",
+    "Category": "Business Lag",
+    "Shift/Window": "Shift -52",
+    "Temporal Class": "Historical (t-52)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior year same-week order count observed at prediction time."
+  },
+  {
+    "Feature": "lag_1_transaction_count",
+    "Category": "Business Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week transaction line item volume."
+  },
+  {
+    "Feature": "lag_1_unique_customers",
+    "Category": "Business Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week unique customer count."
+  },
+  {
+    "Feature": "lag_1_qty_furniture",
+    "Category": "Category Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week Furniture demand volume."
+  },
+  {
+    "Feature": "lag_52_qty_furniture",
+    "Category": "Category Lag",
+    "Shift/Window": "Shift -52",
+    "Temporal Class": "Historical (t-52)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior year same-week Furniture demand volume."
+  },
+  {
+    "Feature": "lag_1_qty_office_supplies",
+    "Category": "Category Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week Office Supplies volume."
+  },
+  {
+    "Feature": "lag_52_qty_office_supplies",
+    "Category": "Category Lag",
+    "Shift/Window": "Shift -52",
+    "Temporal Class": "Historical (t-52)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior year same-week Office Supplies volume."
+  },
+  {
+    "Feature": "lag_1_qty_technology",
+    "Category": "Category Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week Technology volume."
+  },
+  {
+    "Feature": "lag_52_qty_technology",
+    "Category": "Category Lag",
+    "Shift/Window": "Shift -52",
+    "Temporal Class": "Historical (t-52)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior year same-week Technology volume."
+  },
+  {
+    "Feature": "lag_1_qty_central",
+    "Category": "Regional Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week Central region volume."
+  },
+  {
+    "Feature": "lag_1_qty_east",
+    "Category": "Regional Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week East region volume."
+  },
+  {
+    "Feature": "lag_1_qty_south",
+    "Category": "Regional Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week South region volume."
+  },
+  {
+    "Feature": "lag_1_qty_west",
+    "Category": "Regional Lag",
+    "Shift/Window": "Shift -1",
+    "Temporal Class": "Historical (t-1)",
+    "Status": "ALLOWED",
+    "Rationale": "Prior week West region volume."
+  },
+  {
+    "Feature": "current_week_sales (sales)",
+    "Category": "Business Contemporaneous",
+    "Shift/Window": "Shift 0",
+    "Temporal Class": "Contemporaneous (week t)",
+    "Status": "PROHIBITED (EXCLUDED)",
+    "Rationale": "Total sales in week t is not known until week t ends. Using it to forecast week t demand is future leakage."
+  },
+  {
+    "Feature": "current_week_profit (profit)",
+    "Category": "Business Contemporaneous",
+    "Shift/Window": "Shift 0",
+    "Temporal Class": "Contemporaneous (week t)",
+    "Status": "PROHIBITED (EXCLUDED)",
+    "Rationale": "Profit in week t is unknown at forecast creation."
+  },
+  {
+    "Feature": "current_week_discount (avg_discount)",
+    "Category": "Business Contemporaneous",
+    "Shift/Window": "Shift 0",
+    "Temporal Class": "Contemporaneous (week t)",
+    "Status": "PROHIBITED (EXCLUDED)",
+    "Rationale": "Average realized discount in week t is unknown at forecast time."
+  },
+  {
+    "Feature": "current_week_orders (order_count)",
+    "Category": "Business Contemporaneous",
+    "Shift/Window": "Shift 0",
+    "Temporal Class": "Contemporaneous (week t)",
+    "Status": "PROHIBITED (EXCLUDED)",
+    "Rationale": "Total order count in week t is unknown at forecast time."
+  },
+  {
+    "Feature": "current_week_customers (unique_customers)",
+    "Category": "Business Contemporaneous",
+    "Shift/Window": "Shift 0",
+    "Temporal Class": "Contemporaneous (week t)",
+    "Status": "PROHIBITED (EXCLUDED)",
+    "Rationale": "Customer count in week t is unknown at forecast time."
+  },
+  {
+    "Feature": "current_week_category_qtys",
+    "Category": "Category Contemporaneous",
+    "Shift/Window": "Shift 0",
+    "Temporal Class": "Contemporaneous (week t)",
+    "Status": "PROHIBITED (EXCLUDED)",
+    "Rationale": "Category quantities sum directly to target quantity. Using contemporaneous category quantities is trivial label leakage."
+  }
+]
