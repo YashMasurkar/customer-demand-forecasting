@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "generated_at_utc": "2026-08-23T10:12:01.123585+00:00",
+  "generated_at_utc": "2026-08-23T10:17:50.427415+00:00",
   "historical_kpis": {
     "total_quantity": 37873,
     "total_sales": 2297200.86,
@@ -945,67 +945,10 @@
       "description": "Observed weekly demand of 564 units was 2.18 standard deviations above the rolling 13-week baseline mean of 349.5 units."
     }
   ],
-  "forecast_analytics": {
-    "champion_model": "Holt-Winters (Additive Trend, Additive Seasonality, s=52)",
-    "forecast_start_date": "2017-01-02",
-    "forecast_end_date": "2017-12-25",
-    "horizons": {
-      "next_1_week": {
-        "horizon_name": "next_1_week",
-        "horizon_weeks": 1,
-        "total_forecast_quantity": 115.53,
-        "mean_weekly_forecast": 115.53,
-        "prior_period_actual_quantity": 220.0,
-        "pct_change_vs_prior_period": -47.49
-      },
-      "next_4_weeks": {
-        "horizon_name": "next_4_weeks",
-        "horizon_weeks": 4,
-        "total_forecast_quantity": 495.34,
-        "mean_weekly_forecast": 123.84,
-        "prior_period_actual_quantity": 1219.0,
-        "pct_change_vs_prior_period": -59.37
-      },
-      "next_8_weeks": {
-        "horizon_name": "next_8_weeks",
-        "horizon_weeks": 8,
-        "total_forecast_quantity": 990.39,
-        "mean_weekly_forecast": 123.8,
-        "prior_period_actual_quantity": 2597.0,
-        "pct_change_vs_prior_period": -61.86
-      },
-      "next_12_weeks": {
-        "horizon_name": "next_12_weeks",
-        "horizon_weeks": 12,
-        "total_forecast_quantity": 1741.98,
-        "mean_weekly_forecast": 145.16,
-        "prior_period_actual_quantity": 3456.0,
-        "pct_change_vs_prior_period": -49.6
-      },
-      "full_52_weeks": {
-        "horizon_name": "full_52_weeks",
-        "horizon_weeks": 52,
-        "total_forecast_quantity": 12224.53,
-        "mean_weekly_forecast": 235.09,
-        "prior_period_actual_quantity": 9867.0,
-        "pct_change_vs_prior_period": 23.89
-      }
-    },
-    "peak_forecast_week": {
-      "week_start": "2017-11-06",
-      "forecast_quantity": 406.31,
-      "description": "Peak projected weekly demand: 406.3 units on 2017-11-06."
-    },
-    "trough_forecast_week": {
-      "week_start": "2017-01-02",
-      "forecast_quantity": 115.53,
-      "description": "Trough projected weekly demand: 115.5 units on 2017-01-02."
-    },
-    "annual_forecast_total": 12224.53
-  },
-  "model_metadata": {
+  "model_evaluation": {
     "model_name": "Holt-Winters Exponential Smoothing",
     "model_type": "Additive Linear Trend, Additive Annual Seasonality (s=52)",
+    "evaluation_period": "2017 Historical Holdout (52 weeks)",
     "training_period": "2014-01-06 to 2016-12-26 (156 weeks)",
     "test_period": "2017-01-02 to 2017-12-25 (52 weeks)",
     "test_mae": 39.02,
@@ -1013,6 +956,88 @@
     "test_mape": 19.24,
     "test_smape": 17.4,
     "test_bias": 3.76,
-    "evaluation_notes": "Evaluation accuracy metrics reflect out-of-sample holdout performance on the unseen 2017 test set."
+    "evaluation_notes": "These accuracy metrics represent out-of-sample holdout validation on the historical 2017 test set."
+  },
+  "forward_forecast": {
+    "model_name": "Holt-Winters Exponential Smoothing (Additive Trend, Additive Seasonality, s=52)",
+    "forecast_origin": "2017-12-25",
+    "forecast_start_date": "2018-01-01",
+    "forecast_end_date": "2018-12-24",
+    "annual_forecast_total": 16266.75,
+    "comparison_historical_year": "2017",
+    "comparison_historical_total_quantity": 12420.0,
+    "annual_projected_growth_pct": 30.97,
+    "horizons": {
+      "next_1_week": {
+        "horizon_name": "next_1_week",
+        "horizon_weeks": 1,
+        "forecast_start_date": "2018-01-01",
+        "forecast_end_date": "2018-01-01",
+        "total_forecast_quantity": 169.02,
+        "mean_weekly_forecast": 169.02,
+        "comparison_prior_period_dates": "2017-12-25",
+        "comparison_prior_period_quantity": 233.0,
+        "pct_change_vs_prior_period": -27.46,
+        "comparison_note": "Compared against preceding historical week 2017-12-25 (233.0 units)."
+      },
+      "next_4_weeks": {
+        "horizon_name": "next_4_weeks",
+        "horizon_weeks": 4,
+        "forecast_start_date": "2018-01-01",
+        "forecast_end_date": "2018-01-22",
+        "total_forecast_quantity": 747.73,
+        "mean_weekly_forecast": 186.93,
+        "comparison_prior_period_dates": "2017-12-04 to 2017-12-25",
+        "comparison_prior_period_quantity": 1352.0,
+        "pct_change_vs_prior_period": -44.69,
+        "comparison_note": "Compared against preceding 4 historical weeks (2017-12-04 to 2017-12-25)."
+      },
+      "next_8_weeks": {
+        "horizon_name": "next_8_weeks",
+        "horizon_weeks": 8,
+        "forecast_start_date": "2018-01-01",
+        "forecast_end_date": "2018-02-19",
+        "total_forecast_quantity": 1485.29,
+        "mean_weekly_forecast": 185.66,
+        "comparison_prior_period_dates": "2017-11-06 to 2017-12-25",
+        "comparison_prior_period_quantity": 3227.0,
+        "pct_change_vs_prior_period": -53.97,
+        "comparison_note": "Compared against preceding 8 historical weeks (2017-11-06 to 2017-12-25)."
+      },
+      "next_12_weeks": {
+        "horizon_name": "next_12_weeks",
+        "horizon_weeks": 12,
+        "forecast_start_date": "2018-01-01",
+        "forecast_end_date": "2018-03-19",
+        "total_forecast_quantity": 2504.15,
+        "mean_weekly_forecast": 208.68,
+        "comparison_prior_period_dates": "2017-10-09 to 2017-12-25",
+        "comparison_prior_period_quantity": 4336.0,
+        "pct_change_vs_prior_period": -42.25,
+        "comparison_note": "Compared against preceding 12 historical weeks (2017-10-09 to 2017-12-25)."
+      },
+      "full_52_weeks": {
+        "horizon_name": "full_52_weeks",
+        "horizon_weeks": 52,
+        "forecast_start_date": "2018-01-01",
+        "forecast_end_date": "2018-12-24",
+        "total_forecast_quantity": 16266.75,
+        "mean_weekly_forecast": 312.82,
+        "comparison_prior_period_dates": "2017-01-02 to 2017-12-25 (Full Year 2017)",
+        "comparison_prior_period_quantity": 12420.0,
+        "pct_change_vs_prior_period": 30.97,
+        "comparison_note": "Compared against total demand of full historical year 2017 (12,420 units)."
+      }
+    },
+    "peak_forecast_week": {
+      "week_start": "2018-11-26",
+      "forecast_quantity": 528.79,
+      "description": "Peak projected future demand: 528.8 units on 2018-11-26."
+    },
+    "trough_forecast_week": {
+      "week_start": "2018-01-01",
+      "forecast_quantity": 169.02,
+      "description": "Trough projected future demand: 169.0 units on 2018-01-01."
+    }
   }
 }

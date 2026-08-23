@@ -1,7 +1,7 @@
 """Deterministic Business Analytics Engine for demand forecasting and portfolio insights.
 
 This module computes verified historical KPIs, time-series growth, category/regional breakdowns,
-top/bottom rankings, statistical anomalies, and forward forecast analytics.
+top/bottom rankings, statistical anomalies, forward production forecasts, and holdout evaluation metadata.
 """
 
 from datetime import datetime, timezone
@@ -19,10 +19,11 @@ from src.analytics.schemas import (
     DemandAnomaly,
     ForecastHorizonSummary,
     PeakTroughWeek,
-    ForecastAnalytics,
+    ForwardProductionForecast,
     ModelEvaluationMetadata,
     BusinessAnalyticsContext
 )
+from src.models.holt_winters import HoltWintersForecaster
 
 
 def calculate_safe_growth(
@@ -337,29 +338,68 @@ def detect_demand_anomalies(
     return anomalies
 
 
-def generate_forecast_analytics(
-    hw_forecasts_df: pd.DataFrame,
-    complete_weekly_df: pd.DataFrame,
-    model_eval_dict: Dict[str, Any]
-) -> ForecastAnalytics:
-    """Generate structured multi-horizon forward analytics using champion Holt-Winters forecasts.
+def generate_forward_production_forecast(
+    weekly_df: pd.DataFrame,
+    horizon: int = 52
+) -> Tuple[ForwardProductionForecast, pd.DataFrame]:
+    """Fit champion Holt-Winters model on complete historical data and generate forward future forecasts.
+
+    Genuinely Future Forecasting:
+    - Trains on all 208 complete historical weekly observations (2014-01-06 to 2017-12-25).
+    - Forecast Origin: 2017-12-25 (last observed complete week).
+    - Forecast Start Date: 2018-01-01 (first unobserved future week).
+    - Forecast End Date: 2018-12-24 (52 weeks ahead).
+    - Compares future horizons against equivalent preceding historical periods (e.g. 2017 actuals).
 
     Args:
-        hw_forecasts_df: DataFrame of 52-week out-of-sample Holt-Winters forecasts.
-        complete_weekly_df: Complete historical weekly demand DataFrame.
-        model_eval_dict: Evaluation metrics dictionary from reports.
+        weekly_df: Processed weekly demand DataFrame.
+        horizon: Forecast horizon in weeks (default 52).
 
     Returns:
-        ForecastAnalytics Pydantic model.
+        Tuple of (ForwardProductionForecast Pydantic model, forward_forecast_df).
     """
-    df_pred = hw_forecasts_df.copy().reset_index(drop=True)
-    preds = df_pred["hw_pred"].values.astype(float)
-    dates = df_pred["week_start"].tolist()
+    df_complete = weekly_df[~weekly_df["is_partial_week"]].copy().reset_index(drop=True)
+    history_qty = df_complete["quantity"].values.astype(float)
+    last_obs_date_str = str(df_complete["week_start"].iloc[-1])  # '2017-12-25'
+    last_obs_dt = pd.to_datetime(last_obs_date_str)
 
-    # Preceding historical complete weeks for comparison (last 52 weeks of training: 2016)
-    hist_complete = complete_weekly_df[~complete_weekly_df["is_partial_week"]].copy().reset_index(drop=True)
-    # The last 52 weeks before test start
-    train_history_52 = hist_complete.loc[hist_complete["year"] == 2016, "quantity"].values.astype(float)
+    # 1. Fit Champion Holt-Winters model on full historical series
+    hw_prod = HoltWintersForecaster(
+        trend="add",
+        seasonal="add",
+        seasonal_periods=52,
+        damped_trend=False,
+        initialization_method="estimated"
+    )
+    hw_prod.fit(history_qty)
+
+    # 2. Predict future weeks
+    point_preds, pi_lower, pi_upper = hw_prod.predict(
+        horizon=horizon,
+        return_intervals=True,
+        confidence_level=0.95,
+        interval_method="analytical_approx"
+    )
+
+    # 3. Generate future dates (Monday alignment)
+    future_dates = pd.date_range(
+        last_obs_dt + pd.Timedelta(days=7),
+        periods=horizon,
+        freq="W-MON"
+    ).strftime("%Y-%m-%d").tolist()
+
+    forward_df = pd.DataFrame({
+        "week_start": future_dates,
+        "forecast_quantity": np.round(point_preds, 2),
+        "pi_lower_95": np.round(pi_lower, 2) if pi_lower is not None else np.nan,
+        "pi_upper_95": np.round(pi_upper, 2) if pi_upper is not None else np.nan,
+    })
+
+    # 4. Multi-Horizon Summaries & Explicit Historical Comparisons
+    # 2017 complete historical series (last 52 complete weeks: 2017-01-02 to 2017-12-25)
+    hist_2017 = df_complete.loc[df_complete["year"] == 2017, "quantity"].values.astype(float)
+    hist_2017_dates = df_complete.loc[df_complete["year"] == 2017, "week_start"].tolist()
+    hist_2017_total = float(np.sum(hist_2017))  # 12,420.0 units
 
     horizons_config = [
         ("next_1_week", 1),
@@ -371,47 +411,74 @@ def generate_forecast_analytics(
 
     horizons_dict: Dict[str, ForecastHorizonSummary] = {}
     for h_name, h_len in horizons_config:
-        h_len_clamped = min(h_len, len(preds))
-        f_sum = float(np.sum(preds[:h_len_clamped]))
-        f_mean = float(np.mean(preds[:h_len_clamped]))
+        h_len_clamped = min(h_len, len(point_preds))
+        f_sum = round(float(np.sum(point_preds[:h_len_clamped])), 2)
+        f_mean = round(float(np.mean(point_preds[:h_len_clamped])), 2)
+        f_start_date = future_dates[0]
+        f_end_date = future_dates[h_len_clamped - 1]
 
-        # Equivalent historical period (e.g. preceding h_len weeks from end of training set)
-        prior_actual = float(np.sum(train_history_52[-h_len_clamped:])) if len(train_history_52) >= h_len_clamped else 0.0
-        pct_change = round(((f_sum - prior_actual) / prior_actual) * 100.0, 2) if prior_actual > 0 else None
+        if h_name == "full_52_weeks":
+            prior_dates = f"{hist_2017_dates[0]} to {hist_2017_dates[-1]} (Full Year 2017)"
+            prior_qty = round(hist_2017_total, 2)
+            pct_change = round(((f_sum - prior_qty) / prior_qty) * 100.0, 2) if prior_qty > 0 else None
+            note = f"Compared against total demand of full historical year 2017 ({prior_qty:,.0f} units)."
+        elif h_name == "next_1_week":
+            prior_dates = str(last_obs_date_str)
+            prior_qty = round(float(history_qty[-1]), 2)
+            pct_change = round(((f_sum - prior_qty) / prior_qty) * 100.0, 2) if prior_qty > 0 else None
+            note = f"Compared against preceding historical week {last_obs_date_str} ({prior_qty:.1f} units)."
+        else:
+            prior_dates = f"{df_complete['week_start'].iloc[-h_len_clamped]} to {last_obs_date_str}"
+            prior_qty = round(float(np.sum(history_qty[-h_len_clamped:])), 2)
+            pct_change = round(((f_sum - prior_qty) / prior_qty) * 100.0, 2) if prior_qty > 0 else None
+            note = f"Compared against preceding {h_len_clamped} historical weeks ({prior_dates})."
 
         horizons_dict[h_name] = ForecastHorizonSummary(
             horizon_name=h_name,
             horizon_weeks=h_len_clamped,
-            total_forecast_quantity=round(f_sum, 2),
-            mean_weekly_forecast=round(f_mean, 2),
-            prior_period_actual_quantity=round(prior_actual, 2),
-            pct_change_vs_prior_period=pct_change
+            forecast_start_date=f_start_date,
+            forecast_end_date=f_end_date,
+            total_forecast_quantity=f_sum,
+            mean_weekly_forecast=f_mean,
+            comparison_prior_period_dates=prior_dates,
+            comparison_prior_period_quantity=prior_qty,
+            pct_change_vs_prior_period=pct_change,
+            comparison_note=note
         )
 
-    # Peak and Trough Forecast Weeks
-    peak_idx = int(np.argmax(preds))
-    trough_idx = int(np.argmin(preds))
+    # 5. Future Peak and Trough Weeks
+    peak_idx = int(np.argmax(point_preds))
+    trough_idx = int(np.argmin(point_preds))
 
     peak_week = PeakTroughWeek(
-        week_start=dates[peak_idx],
-        forecast_quantity=round(float(preds[peak_idx]), 2),
-        description=f"Peak projected weekly demand: {preds[peak_idx]:.1f} units on {dates[peak_idx]}."
+        week_start=future_dates[peak_idx],
+        forecast_quantity=round(float(point_preds[peak_idx]), 2),
+        description=f"Peak projected future demand: {point_preds[peak_idx]:.1f} units on {future_dates[peak_idx]}."
     )
     trough_week = PeakTroughWeek(
-        week_start=dates[trough_idx],
-        forecast_quantity=round(float(preds[trough_idx]), 2),
-        description=f"Trough projected weekly demand: {preds[trough_idx]:.1f} units on {dates[trough_idx]}."
+        week_start=future_dates[trough_idx],
+        forecast_quantity=round(float(point_preds[trough_idx]), 2),
+        description=f"Trough projected future demand: {point_preds[trough_idx]:.1f} units on {future_dates[trough_idx]}."
     )
 
-    return ForecastAnalytics(
-        champion_model="Holt-Winters (Additive Trend, Additive Seasonality, s=52)",
-        forecast_start_date=dates[0],
-        forecast_end_date=dates[-1],
+    annual_total = round(float(np.sum(point_preds)), 2)
+    annual_growth_pct = round(((annual_total - hist_2017_total) / hist_2017_total) * 100.0, 2)
+
+    forward_forecast = ForwardProductionForecast(
+        model_name="Holt-Winters Exponential Smoothing (Additive Trend, Additive Seasonality, s=52)",
+        forecast_origin=last_obs_date_str,
+        forecast_start_date=future_dates[0],
+        forecast_end_date=future_dates[-1],
+        annual_forecast_total=annual_total,
+        comparison_historical_year="2017",
+        comparison_historical_total_quantity=hist_2017_total,
+        annual_projected_growth_pct=annual_growth_pct,
         horizons=horizons_dict,
         peak_forecast_week=peak_week,
-        trough_forecast_week=trough_week,
-        annual_forecast_total=round(float(np.sum(preds)), 2)
+        trough_forecast_week=trough_week
     )
+
+    return forward_forecast, forward_df
 
 
 def build_business_analytics_context(
@@ -420,6 +487,10 @@ def build_business_analytics_context(
     reports_dir: Path | str = "reports"
 ) -> BusinessAnalyticsContext:
     """Construct complete verified Business Analytics Context for downstream LLM grounding.
+
+    Explicitly separates:
+        A. Model Evaluation (Historical holdout on 2017 test set)
+        B. Forward Forecast (Genuinely future production forecast for 2018+)
 
     Args:
         raw_df_path: Path to raw dataset CSV.
@@ -451,13 +522,14 @@ def build_business_analytics_context(
     # 5. Anomalies
     anomalies = detect_demand_anomalies(weekly_df, window=13, z_threshold=2.0)
 
-    # 6. Forecast Analytics from Champion Holt-Winters model
-    hw_forecast_csv = rep_dir / "holt_winters_forecasts.csv"
-    if not hw_forecast_csv.exists():
-        raise FileNotFoundError(f"Champion forecast CSV not found at: {hw_forecast_csv}")
-    hw_forecast_df = pd.read_csv(hw_forecast_csv)
+    # 6. Genuinely Future Forward Production Forecast (2018+)
+    forward_forecast, forward_df = generate_forward_production_forecast(weekly_df, horizon=52)
 
-    # Model evaluation metadata
+    # Save forward forecast CSV
+    forward_csv_path = rep_dir / "forward_production_forecasts.csv"
+    forward_df.to_csv(forward_csv_path, index=False)
+
+    # 7. Model Evaluation Metadata (Historical Holdout on 2017)
     hw_eval_json = rep_dir / "holt_winters_evaluation.json"
     eval_dict = {}
     if hw_eval_json.exists():
@@ -468,11 +540,10 @@ def build_business_analytics_context(
     hw_acc = eval_dict.get("accuracy_metrics", {}).get("holt_winters", {})
     split_info = eval_dict.get("split_info", {})
 
-    forecast_analytics = generate_forecast_analytics(hw_forecast_df, weekly_df, eval_dict)
-
-    model_metadata = ModelEvaluationMetadata(
+    model_evaluation = ModelEvaluationMetadata(
         model_name="Holt-Winters Exponential Smoothing",
         model_type="Additive Linear Trend, Additive Annual Seasonality (s=52)",
+        evaluation_period="2017 Historical Holdout (52 weeks)",
         training_period=f"{split_info.get('train_start_date', '2014-01-06')} to {split_info.get('train_end_date', '2016-12-26')} ({split_info.get('num_train_observations', 156)} weeks)",
         test_period=f"{split_info.get('test_start_date', '2017-01-02')} to {split_info.get('test_end_date', '2017-12-25')} ({split_info.get('num_test_observations', 52)} weeks)",
         test_mae=hw_acc.get("mae", 39.02),
@@ -480,7 +551,7 @@ def build_business_analytics_context(
         test_mape=hw_acc.get("mape", 19.24),
         test_smape=hw_acc.get("smape", 17.40),
         test_bias=hw_acc.get("mean_error", 3.76),
-        evaluation_notes="Evaluation accuracy metrics reflect out-of-sample holdout performance on the unseen 2017 test set."
+        evaluation_notes="These accuracy metrics represent out-of-sample holdout validation on the historical 2017 test set."
     )
 
     return BusinessAnalyticsContext(
@@ -491,6 +562,6 @@ def build_business_analytics_context(
         dimension_breakdowns=breakdowns,
         top_bottom_performers=performers,
         anomalies=anomalies,
-        forecast_analytics=forecast_analytics,
-        model_metadata=model_metadata
+        model_evaluation=model_evaluation,
+        forward_forecast=forward_forecast
     )

@@ -77,46 +77,55 @@ class DemandAnomaly(BaseModel):
     description: str = Field(description="Objective, non-causal statistical description.")
 
 
+class PeakTroughWeek(BaseModel):
+    """Date and value of maximum or minimum forecast week."""
+    week_start: str = Field(description="Monday week start date.")
+    forecast_quantity: float = Field(description="Projected demand units.")
+    description: str = Field(description="Descriptive summary.")
+
+
 class ForecastHorizonSummary(BaseModel):
     """Aggregated forward forecast metrics for a specific planning horizon."""
     horizon_name: str = Field(description="e.g. next_1_week, next_4_weeks, next_8_weeks, next_12_weeks, full_52_weeks.")
     horizon_weeks: int = Field(description="Number of weeks covered in this horizon.")
+    forecast_start_date: str = Field(description="Start date of this horizon.")
+    forecast_end_date: str = Field(description="End date of this horizon.")
     total_forecast_quantity: float = Field(description="Sum of predicted demand units over the horizon.")
     mean_weekly_forecast: float = Field(description="Average weekly predicted demand over the horizon.")
-    prior_period_actual_quantity: float = Field(description="Actual demand in the equivalent preceding period.")
-    pct_change_vs_prior_period: Optional[float] = Field(None, description="Percentage change vs. preceding equivalent historical period.")
+    comparison_prior_period_dates: str = Field(description="Dates of the historical comparison period.")
+    comparison_prior_period_quantity: float = Field(description="Actual demand in the equivalent comparison period.")
+    pct_change_vs_prior_period: Optional[float] = Field(None, description="Percentage change vs. comparison historical period.")
+    comparison_note: str = Field(description="Explicit explanation of the historical comparison period.")
 
 
-class PeakTroughWeek(BaseModel):
-    """Date and value of maximum or minimum forecast week."""
-    week_start: str
-    forecast_quantity: float
-    description: str
-
-
-class ForecastAnalytics(BaseModel):
-    """Structured forward-looking forecast outputs from the champion model."""
-    champion_model: str = Field(description="Name of the champion forecasting model (Holt-Winters).")
-    forecast_start_date: str = Field(description="First forecast week start date.")
-    forecast_end_date: str = Field(description="Final forecast week start date.")
+class ForwardProductionForecast(BaseModel):
+    """Structured forward-looking production forecast strictly for future unobserved periods."""
+    model_name: str = Field(description="Champion forecasting model used (Holt-Winters).")
+    forecast_origin: str = Field(description="Final observed historical week start date used to generate the forecast.")
+    forecast_start_date: str = Field(description="First future unobserved forecast week start date (strictly after forecast_origin).")
+    forecast_end_date: str = Field(description="Final future forecast week start date.")
+    annual_forecast_total: float = Field(description="Total 52-week projected future demand.")
+    comparison_historical_year: str = Field(description="Historical comparison baseline year (e.g. 2017).")
+    comparison_historical_total_quantity: float = Field(description="Actual total demand in the comparison baseline year.")
+    annual_projected_growth_pct: float = Field(description="Projected YoY demand growth for the full 52-week forecast vs comparison year.")
     horizons: Dict[str, ForecastHorizonSummary] = Field(description="Summaries for standard operational horizons.")
-    peak_forecast_week: PeakTroughWeek = Field(description="Week with highest projected demand.")
-    trough_forecast_week: PeakTroughWeek = Field(description="Week with lowest projected demand.")
-    annual_forecast_total: float = Field(description="Total 52-week projected annual demand.")
+    peak_forecast_week: PeakTroughWeek = Field(description="Future week with highest projected demand.")
+    trough_forecast_week: PeakTroughWeek = Field(description="Future week with lowest projected demand.")
 
 
 class ModelEvaluationMetadata(BaseModel):
-    """Documented holdout evaluation performance metrics for the champion model."""
-    model_name: str
-    model_type: str
-    training_period: str
-    test_period: str
-    test_mae: float
-    test_rmse: float
-    test_mape: float
-    test_smape: float
-    test_bias: float
-    evaluation_notes: str = Field(description="Explicitly documents that evaluation metrics reflect unseen holdout test performance.")
+    """Documented holdout evaluation performance metrics for the champion model (Historical Holdout)."""
+    model_name: str = Field(description="Champion model evaluated.")
+    model_type: str = Field(description="Model specifications.")
+    evaluation_period: str = Field(description="Historical evaluation test period (e.g. 2017 Holdout).")
+    training_period: str = Field(description="Historical training period.")
+    test_period: str = Field(description="Historical holdout test period.")
+    test_mae: float = Field(description="Holdout Mean Absolute Error.")
+    test_rmse: float = Field(description="Holdout Root Mean Squared Error.")
+    test_mape: float = Field(description="Holdout Mean Absolute Percentage Error.")
+    test_smape: float = Field(description="Holdout Symmetric MAPE.")
+    test_bias: float = Field(description="Holdout Mean Error / Bias.")
+    evaluation_notes: str = Field(description="Explicit documentation that these metrics represent historical holdout validation.")
 
 
 class BusinessAnalyticsContext(BaseModel):
@@ -128,5 +137,5 @@ class BusinessAnalyticsContext(BaseModel):
     dimension_breakdowns: Dict[str, List[DimensionMetric]] = Field(description="Breakdowns by Category, Sub-Category, Region.")
     top_bottom_performers: TopBottomPerformers
     anomalies: List[DemandAnomaly]
-    forecast_analytics: ForecastAnalytics
-    model_metadata: ModelEvaluationMetadata
+    model_evaluation: ModelEvaluationMetadata = Field(description="Historical holdout evaluation benchmark on 2017.")
+    forward_forecast: ForwardProductionForecast = Field(description="Genuine forward production forecast for 2018+.")

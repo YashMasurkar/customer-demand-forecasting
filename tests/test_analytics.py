@@ -1,4 +1,4 @@
-"""Unit tests for Business Analytics Engine, deterministic KPIs, dimension aggregations, and context generation."""
+"""Unit tests for Business Analytics Engine, deterministic KPIs, dimension aggregations, and forward production forecasts."""
 
 import json
 import pytest
@@ -13,7 +13,8 @@ from src.analytics.schemas import (
     DimensionMetric,
     TopBottomPerformers,
     DemandAnomaly,
-    ForecastAnalytics,
+    ForwardProductionForecast,
+    ModelEvaluationMetadata,
     BusinessAnalyticsContext
 )
 from src.analytics.engine import (
@@ -23,7 +24,7 @@ from src.analytics.engine import (
     calculate_dimension_breakdowns,
     identify_top_bottom_performers,
     detect_demand_anomalies,
-    generate_forecast_analytics,
+    generate_forward_production_forecast,
     build_business_analytics_context
 )
 
@@ -129,9 +130,7 @@ def test_identify_top_bottom_performers(sample_raw_and_weekly_dfs):
     performers = identify_top_bottom_performers(breakdowns)
 
     assert isinstance(performers, TopBottomPerformers)
-    # Office Supplies is #1 in volume
     assert performers.top_categories_by_quantity[0].dimension_value == "Office Supplies"
-    # Technology is #1 in sales and profit
     assert performers.top_categories_by_sales[0].dimension_value == "Technology"
     assert performers.top_categories_by_profit[0].dimension_value == "Technology"
     assert len(performers.top_sub_categories_by_quantity) == 5
@@ -147,15 +146,61 @@ def test_detect_demand_anomalies(sample_raw_and_weekly_dfs):
     assert len(anomalies) > 0
     assert all(isinstance(a, DemandAnomaly) for a in anomalies)
     assert all(abs(a.z_score) >= 2.0 for a in anomalies)
-    # Ensure descriptions are objective
     assert all("standard deviations" in a.description for a in anomalies)
+
+
+def test_forward_forecast_dates_strictly_after_origin(sample_raw_and_weekly_dfs):
+    """Verify forward forecast dates are strictly in 2018 (after origin 2017-12-25)."""
+    _, weekly_df = sample_raw_and_weekly_dfs
+    f_prod, df_pred = generate_forward_production_forecast(weekly_df, horizon=52)
+
+    assert isinstance(f_prod, ForwardProductionForecast)
+    assert f_prod.forecast_origin == "2017-12-25"
+    assert f_prod.forecast_start_date == "2018-01-01"
+    assert f_prod.forecast_end_date == "2018-12-24"
+    assert len(df_pred) == 52
+
+    # All predicted dates must be >= 2018-01-01
+    pred_dates = pd.to_datetime(df_pred["week_start"])
+    assert (pred_dates >= pd.to_datetime("2018-01-01")).all()
+
+
+def test_evaluation_forecast_dates_not_exposed_as_future():
+    """Verify that evaluation metadata and future forecasts are strictly separated."""
+    context = build_business_analytics_context()
+
+    # Evaluation metadata must refer to 2017 holdout
+    assert "2017" in context.model_evaluation.evaluation_period
+    assert context.model_evaluation.test_mae == pytest.approx(39.02, abs=0.5)
+
+    # Future forecast must start in 2018
+    assert context.forward_forecast.forecast_start_date == "2018-01-01"
+    assert context.forward_forecast.peak_forecast_week.week_start.startswith("2018")
+    assert context.forward_forecast.trough_forecast_week.week_start.startswith("2018")
+
+
+def test_forward_forecast_horizons_and_comparisons(sample_raw_and_weekly_dfs):
+    """Verify horizon lengths, positive totals, and documented historical comparisons."""
+    _, weekly_df = sample_raw_and_weekly_dfs
+    f_prod, _ = generate_forward_production_forecast(weekly_df, horizon=52)
+
+    assert "next_1_week" in f_prod.horizons
+    assert "next_4_weeks" in f_prod.horizons
+    assert "next_8_weeks" in f_prod.horizons
+    assert "next_12_weeks" in f_prod.horizons
+    assert "full_52_weeks" in f_prod.horizons
+
+    h52 = f_prod.horizons["full_52_weeks"]
+    assert h52.total_forecast_quantity == pytest.approx(16266.75, abs=5.0)
+    assert h52.comparison_prior_period_quantity == 12420.0  # 2017 actual total
+    assert h52.pct_change_vs_prior_period == pytest.approx(30.97, abs=0.2)
 
 
 def test_build_business_analytics_context_json_serialization():
     """Verify end-to-end context builder execution, Pydantic validation, and JSON serialization."""
     reports_dir = Path("reports")
-    if not (reports_dir / "holt_winters_forecasts.csv").exists():
-        pytest.skip("Holt-Winters forecast artifacts missing.")
+    if not (reports_dir / "holt_winters_evaluation.json").exists():
+        pytest.skip("Holt-Winters evaluation report missing.")
 
     context = build_business_analytics_context()
     assert isinstance(context, BusinessAnalyticsContext)
@@ -170,6 +215,7 @@ def test_build_business_analytics_context_json_serialization():
     assert "dimension_breakdowns" in reloaded_dict
     assert "top_bottom_performers" in reloaded_dict
     assert "anomalies" in reloaded_dict
-    assert "forecast_analytics" in reloaded_dict
-    assert "model_metadata" in reloaded_dict
-    assert reloaded_dict["model_metadata"]["test_mae"] == pytest.approx(39.02, abs=0.5)
+    assert "model_evaluation" in reloaded_dict
+    assert "forward_forecast" in reloaded_dict
+    assert reloaded_dict["model_evaluation"]["test_mae"] == pytest.approx(39.02, abs=0.5)
+    assert reloaded_dict["forward_forecast"]["forecast_start_date"] == "2018-01-01"
