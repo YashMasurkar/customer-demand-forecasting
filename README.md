@@ -8,6 +8,8 @@
 
 **DemandIQ** is an end-to-end Data Science, Time-Series Forecasting, and Business Intelligence platform. It analyzes historical commercial transactions, benchmarks classical statistical and machine-learning forecasting architectures, generates forward demand projections with analytical prediction intervals, and provides an executive **Grounded AI Business Analyst** powered by Google Gemini.
 
+> 🚀 **Live Demo:** [https://demandiq-g9j8.onrender.com](https://demandiq-g9j8.onrender.com)
+
 ---
 
 ## 🎯 Executive Overview & Architectural Highlights
