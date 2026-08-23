@@ -1,0 +1,110 @@
+{
+  "split_info": {
+    "total_complete_observations": 208,
+    "train_start_date": "2014-01-06",
+    "train_end_date": "2016-12-26",
+    "num_train_observations": 156,
+    "test_start_date": "2017-01-02",
+    "test_end_date": "2017-12-25",
+    "num_test_observations": 52,
+    "test_ratio": 0.25,
+    "partial_weeks_excluded_count": 1,
+    "partial_weeks_excluded": [
+      "2013-12-30"
+    ]
+  },
+  "model_configuration": {
+    "model_type": "Holt-Winters Exponential Smoothing",
+    "trend": "add",
+    "seasonal": "add",
+    "seasonal_periods": 52,
+    "damped_trend": false,
+    "initialization_method": "estimated",
+    "smoothing_parameters": {
+      "smoothing_level": 0.0437,
+      "smoothing_trend": 0.0437,
+      "smoothing_seasonal": 0.0,
+      "damping_trend": null
+    }
+  },
+  "accuracy_metrics": {
+    "holt_winters": {
+      "model_name": "Holt-Winters (Add Trend, Add Season)",
+      "mae": 39.02,
+      "rmse": 52.4,
+      "mape": 19.24,
+      "smape": 17.4,
+      "mean_error": 3.76,
+      "max_error": 164.03,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "seasonal_naive": {
+      "model_name": "Seasonal Naive (Lag-52)",
+      "mae": 65.63,
+      "rmse": 84.66,
+      "mape": 28.03,
+      "smape": 33.41,
+      "mean_error": 49.1,
+      "max_error": 242.0,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    },
+    "naive_1step": {
+      "model_name": "Naive (Lag-1)",
+      "mae": 63.75,
+      "rmse": 84.39,
+      "mape": 30.93,
+      "smape": 27.86,
+      "mean_error": 0.25,
+      "max_error": 258.0,
+      "num_eval_points": 52,
+      "mape_applicable": true,
+      "mape_notes": "MAPE is mathematically well-defined (all actual test values >= 62.0 > 0). Note that percentage errors can still be asymmetric between low-demand and high-demand periods."
+    }
+  },
+  "in_sample_diagnostics": {
+    "residual_mean": 5.04,
+    "residual_std": 40.17,
+    "residual_variance": 1613.33,
+    "residual_skewness": 0.3375,
+    "residual_kurtosis": 0.1723,
+    "ljung_box_results": {
+      "lag_5": {
+        "statistic": 9.019,
+        "p_value": 0.1083
+      },
+      "lag_10": {
+        "statistic": 10.9837,
+        "p_value": 0.3588
+      },
+      "lag_15": {
+        "statistic": 12.3002,
+        "p_value": 0.6562
+      },
+      "lag_20": {
+        "statistic": 16.6526,
+        "p_value": 0.6754
+      }
+    },
+    "has_significant_autocorrelation_at_5pct": false,
+    "aic": 1267.49,
+    "bic": 1438.28,
+    "model_params": {
+      "smoothing_level": 0.0437,
+      "smoothing_trend": 0.0437,
+      "smoothing_seasonal": 0.0,
+      "damping_trend": null
+    }
+  },
+  "prediction_interval_coverage_95pct": 86.53846153846155,
+  "comparative_summary": {
+    "hw_vs_snaive_mae_reduction_pct": 40.55,
+    "hw_vs_snaive_rmse_reduction_pct": 38.11,
+    "hw_vs_snaive_mape_reduction_pct": 31.36,
+    "bias_reduction": "From +49.10 (Seasonal Naive) to +3.76 (Holt-Winters)",
+    "conclusion": "Holt-Winters demonstrates substantial, measurable accuracy gains by simultaneously modeling the observed trend and 52-week annual seasonality."
+  }
+}
