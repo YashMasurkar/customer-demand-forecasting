@@ -222,28 +222,64 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!res.ok) throw new Error("Failed to load forecast");
         const fData = await res.json();
 
-        // Update Quick Stat Cards with exact authoritative API values and comparison baselines
+        // 1. Update Selected Horizon Date Coverage
+        const datesEl = document.getElementById("selected-horizon-dates");
+        if (datesEl) {
+            datesEl.textContent = `${fData.forecast_start_date} → ${fData.forecast_end_date} (${horizon} Weeks)`;
+        }
+
+        // 2. Find Horizon Peak and Trough within the active sliced records
+        let maxRec = fData.forecast_records[0];
+        let minRec = fData.forecast_records[0];
+        fData.forecast_records.forEach(r => {
+            if (r.forecast_quantity > maxRec.forecast_quantity) maxRec = r;
+            if (r.forecast_quantity < minRec.forecast_quantity) minRec = r;
+        });
+
+        // 3. Update Primary Selected-Horizon Demand KPI Card
+        document.getElementById("primary-horizon-label").textContent = `Selected Horizon Demand (${horizon}W)`;
+        document.getElementById("primary-horizon-value").textContent = `${Number(fData.total_forecast_quantity).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} u`;
+
+        const compBadge = document.getElementById("primary-horizon-comp");
+        if (compBadge) {
+            if (horizon === 52) {
+                compBadge.textContent = `+${fData.projected_growth_pct.toFixed(2)}% YoY vs 2017 actuals (${Number(fData.comparison_historical_total_quantity).toLocaleString()} u baseline)`;
+            } else {
+                const sign = fData.projected_growth_pct >= 0 ? '+' : '';
+                compBadge.textContent = `${sign}${fData.projected_growth_pct.toFixed(2)}% vs preceding ${horizon}w (${Number(fData.comparison_historical_total_quantity).toLocaleString()} u baseline)`;
+            }
+        }
+
+        // 4. Update Secondary Horizon Cards (Weekly Run Rate, Peak Week, Trough Week)
+        document.getElementById("primary-horizon-mean").textContent = `${fData.mean_weekly_forecast.toFixed(1)} u/wk`;
+        document.getElementById("primary-horizon-mean-sub").textContent = `Average weekly demand across ${horizon} weeks`;
+
+        document.getElementById("primary-horizon-peak").textContent = `${maxRec.forecast_quantity.toFixed(1)} u`;
+        document.getElementById("primary-horizon-peak-sub").textContent = `Week of ${maxRec.week_start}`;
+
+        document.getElementById("primary-horizon-trough").textContent = `${minRec.forecast_quantity.toFixed(1)} u`;
+        document.getElementById("primary-horizon-trough-sub").textContent = `Week of ${minRec.week_start}`;
+
+        // 5. Update Secondary Reference Horizons Strip from Authoritative Context
         if (cachedDashboard && cachedDashboard.forward_forecast_summary) {
             const h = cachedDashboard.forward_forecast_summary.horizons;
-            if (h && h.next_1_week) {
-                document.getElementById("fstat-1w").textContent = h.next_1_week.total_forecast_quantity.toFixed(1) + " u";
-                const p1 = h.next_1_week.pct_change_vs_prior_period;
-                document.getElementById("fstat-1w-sub").textContent = `${p1 >= 0 ? '+' : ''}${p1.toFixed(2)}% vs preceding week`;
-            }
-            if (h && h.next_4_weeks) {
-                document.getElementById("fstat-4w").textContent = h.next_4_weeks.total_forecast_quantity.toFixed(1) + " u";
-                const p4 = h.next_4_weeks.pct_change_vs_prior_period;
-                document.getElementById("fstat-4w-sub").textContent = `${p4 >= 0 ? '+' : ''}${p4.toFixed(2)}% vs preceding 4w`;
-            }
-            if (h && h.next_12_weeks) {
-                document.getElementById("fstat-12w").textContent = Number(h.next_12_weeks.total_forecast_quantity).toLocaleString(undefined, { maximumFractionDigits: 1 }) + " u";
-                const p12 = h.next_12_weeks.pct_change_vs_prior_period;
-                document.getElementById("fstat-12w-sub").textContent = `${p12 >= 0 ? '+' : ''}${p12.toFixed(2)}% vs preceding 12w`;
-            }
-            if (h && h.full_52_weeks) {
-                document.getElementById("fstat-52w").textContent = Number(h.full_52_weeks.total_forecast_quantity).toLocaleString(undefined, { maximumFractionDigits: 1 }) + " u";
-                const p52 = h.full_52_weeks.pct_change_vs_prior_period;
-                document.getElementById("fstat-52w-sub").textContent = `${p52 >= 0 ? '+' : ''}${p52.toFixed(2)}% YoY vs 2017 actuals`;
+            if (h) {
+                if (h.next_1_week) {
+                    const p1 = h.next_1_week.pct_change_vs_prior_period;
+                    document.getElementById("ref-pill-1w").innerHTML = `<strong>1W:</strong> ${h.next_1_week.total_forecast_quantity.toFixed(1)} u <span class="ref-sub">(${p1 >= 0 ? '+' : ''}${p1.toFixed(2)}% vs preceding wk)</span>`;
+                }
+                if (h.next_4_weeks) {
+                    const p4 = h.next_4_weeks.pct_change_vs_prior_period;
+                    document.getElementById("ref-pill-4w").innerHTML = `<strong>4W:</strong> ${h.next_4_weeks.total_forecast_quantity.toFixed(1)} u <span class="ref-sub">(${p4 >= 0 ? '+' : ''}${p4.toFixed(2)}% vs preceding 4w)</span>`;
+                }
+                if (h.next_12_weeks) {
+                    const p12 = h.next_12_weeks.pct_change_vs_prior_period;
+                    document.getElementById("ref-pill-12w").innerHTML = `<strong>12W:</strong> ${Number(h.next_12_weeks.total_forecast_quantity).toLocaleString(undefined, { maximumFractionDigits: 1 })} u <span class="ref-sub">(${p12 >= 0 ? '+' : ''}${p12.toFixed(2)}% vs preceding 12w)</span>`;
+                }
+                if (h.full_52_weeks) {
+                    const p52 = h.full_52_weeks.pct_change_vs_prior_period;
+                    document.getElementById("ref-pill-52w").innerHTML = `<strong>52W:</strong> ${Number(h.full_52_weeks.total_forecast_quantity).toLocaleString(undefined, { maximumFractionDigits: 1 })} u <span class="ref-sub">(+${p52.toFixed(2)}% YoY vs 2017)</span>`;
+                }
             }
         }
 

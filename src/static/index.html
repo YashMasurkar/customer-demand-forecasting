@@ -160,7 +160,7 @@
                 </div>
             </div>
 
-            <!-- Horizon Segmented Switcher & Summary Cards -->
+            <!-- Horizon Controls & Selected Coverage Bar -->
             <div class="forecast-topbar">
                 <div class="horizon-switch-wrapper">
                     <span class="switch-label">Planning Horizon:</span>
@@ -171,28 +171,52 @@
                         <button class="seg-btn active" data-horizon="52">Full 52 Weeks</button>
                     </div>
                 </div>
+                <div class="horizon-coverage-tag">
+                    Coverage: <strong id="selected-horizon-dates">2018-01-01 → 2018-12-24 (52 Weeks)</strong>
+                </div>
+            </div>
 
-                <div class="forecast-quick-stats">
-                    <div class="f-stat-item">
-                        <span class="f-stat-label">Next 1W (2018-01-01)</span>
-                        <span class="f-stat-value" id="fstat-1w">169.0 u</span>
-                        <span class="f-stat-sub" id="fstat-1w-sub">-27.46% vs preceding week</span>
+            <!-- Primary Selected-Horizon KPI Grid -->
+            <div class="forecast-kpi-grid">
+                <!-- Primary Volume Card -->
+                <div class="f-primary-card">
+                    <div class="f-card-label" id="primary-horizon-label">Selected Horizon Projected Demand (52W)</div>
+                    <div class="f-card-main-val" id="primary-horizon-value">16,266.8 u</div>
+                    <div class="f-card-comp-box">
+                        <span class="f-comp-badge" id="primary-horizon-comp">+30.97% YoY vs 2017 actuals</span>
                     </div>
-                    <div class="f-stat-item">
-                        <span class="f-stat-label">Next 4W Total</span>
-                        <span class="f-stat-value" id="fstat-4w">747.7 u</span>
-                        <span class="f-stat-sub" id="fstat-4w-sub">-44.69% vs preceding 4w</span>
-                    </div>
-                    <div class="f-stat-item">
-                        <span class="f-stat-label">Next 12W (Q1 Total)</span>
-                        <span class="f-stat-value" id="fstat-12w">2,504.2 u</span>
-                        <span class="f-stat-sub" id="fstat-12w-sub">-42.25% vs preceding 12w</span>
-                    </div>
-                    <div class="f-stat-item f-stat-primary">
-                        <span class="f-stat-label">Full 2018 Projected Total</span>
-                        <span class="f-stat-value" id="fstat-52w">16,266.8 u</span>
-                        <span class="f-stat-sub" id="fstat-52w-sub">+30.97% YoY vs 2017</span>
-                    </div>
+                </div>
+
+                <!-- Weekly Run Rate Card -->
+                <div class="f-secondary-card">
+                    <div class="f-card-label">Weekly Run Rate</div>
+                    <div class="f-card-val" id="primary-horizon-mean">312.8 u/wk</div>
+                    <div class="f-card-sub" id="primary-horizon-mean-sub">Average weekly predicted demand</div>
+                </div>
+
+                <!-- Horizon Peak Week Card -->
+                <div class="f-secondary-card">
+                    <div class="f-card-label">Horizon Peak Week</div>
+                    <div class="f-card-val" id="primary-horizon-peak">528.8 u</div>
+                    <div class="f-card-sub" id="primary-horizon-peak-sub">Week of 2018-11-26</div>
+                </div>
+
+                <!-- Horizon Trough Week Card -->
+                <div class="f-secondary-card">
+                    <div class="f-card-label">Horizon Trough Week</div>
+                    <div class="f-card-val" id="primary-horizon-trough">169.0 u</div>
+                    <div class="f-card-sub" id="primary-horizon-trough-sub">Week of 2018-01-01</div>
+                </div>
+            </div>
+
+            <!-- Secondary Reference Horizons Strip -->
+            <div class="reference-horizons-strip">
+                <span class="ref-strip-title">Standard Planning Benchmarks:</span>
+                <div class="ref-pills-row">
+                    <span class="ref-pill" id="ref-pill-1w"><strong>1W:</strong> 169.0 u <span class="ref-sub">(-27.46% vs preceding wk)</span></span>
+                    <span class="ref-pill" id="ref-pill-4w"><strong>4W:</strong> 747.7 u <span class="ref-sub">(-44.69% vs preceding 4w)</span></span>
+                    <span class="ref-pill" id="ref-pill-12w"><strong>12W:</strong> 2,504.2 u <span class="ref-sub">(-42.25% vs preceding 12w)</span></span>
+                    <span class="ref-pill" id="ref-pill-52w"><strong>52W:</strong> 16,266.8 u <span class="ref-sub">(+30.97% YoY vs 2017)</span></span>
                 </div>
             </div>
 

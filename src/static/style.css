@@ -551,51 +551,131 @@ body {
     box-shadow: var(--shadow-xs);
 }
 
-.forecast-quick-stats {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
+.horizon-coverage-tag {
+    font-size: 0.84rem;
+    color: var(--text-body);
+    background: var(--bg-card-subtle);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
 }
 
-.f-stat-item {
+/* Forecast Primary & Secondary KPI Grid */
+.forecast-kpi-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.f-primary-card {
+    background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+    border: 1.5px solid #c7d2fe;
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
     display: flex;
     flex-direction: column;
-    padding-right: 20px;
-    border-right: 1px solid var(--border-subtle);
+    justify-content: center;
+    box-shadow: var(--shadow-xs);
 }
 
-.f-stat-item:last-child {
-    border-right: none;
-    padding-right: 0;
+.f-secondary-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: var(--shadow-xs);
 }
 
-.f-stat-label {
+.f-card-label {
     font-size: 0.78rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
 }
 
-.f-stat-value {
-    font-size: 1.25rem;
+.f-card-main-val {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--brand-indigo-hover);
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+}
+
+.f-card-val {
+    font-size: 1.35rem;
     font-weight: 800;
     color: var(--text-main);
     letter-spacing: -0.02em;
-    margin: 2px 0;
+    line-height: 1.2;
 }
 
-.f-stat-sub {
+.f-card-comp-box {
+    margin-top: 6px;
+}
+
+.f-comp-badge {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    background: #ffffff;
+    color: var(--brand-indigo-hover);
+    border: 1px solid #c7d2fe;
+}
+
+.f-card-sub {
     font-size: 0.76rem;
     color: var(--text-muted);
-    font-weight: 500;
+    margin-top: 4px;
 }
 
-.f-stat-primary .f-stat-value {
-    color: var(--brand-indigo);
+/* Reference Horizons Strip */
+.reference-horizons-strip {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 10px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
-.f-stat-primary .f-stat-sub {
-    color: var(--status-green-text);
+.ref-strip-title {
+    font-size: 0.78rem;
     font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.ref-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ref-pill {
+    background: var(--bg-card-subtle);
+    border: 1px solid var(--border-subtle);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    color: var(--text-body);
+}
+
+.ref-sub {
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
 /* Cards & Containers */
@@ -1124,6 +1204,9 @@ body {
     .performance-grid {
         grid-template-columns: 1fr;
     }
+    .forecast-kpi-grid {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1137,15 +1220,8 @@ body {
         flex-direction: column;
         align-items: flex-start;
     }
-    .forecast-quick-stats {
-        width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-    }
-    .f-stat-item {
-        border-right: none;
-        padding-right: 0;
+    .forecast-kpi-grid {
+        grid-template-columns: 1fr;
     }
     .chart-wrapper {
         height: 300px;
