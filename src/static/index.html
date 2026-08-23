@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DemandIQ — Customer Demand Forecasting & Business Intelligence</title>
+    <meta name="description" content="Production-grade AI customer demand forecasting and business intelligence platform powered by statistical modeling, ML benchmarks, and grounded Gemini AI.">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js 4.4.1 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand-group">
+                <div class="brand-logo">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">DemandIQ</span>
+                    <span class="brand-subtitle">Enterprise Demand Intelligence</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a href="#overview" class="nav-link">Overview</a>
+                <a href="#forecast" class="nav-link">Forecast</a>
+                <a href="#performance" class="nav-link">Performance</a>
+                <a href="#models" class="nav-link">Models</a>
+                <a href="#analyst" class="nav-link nav-link-highlight">AI Analyst</a>
+            </nav>
+
+            <div class="nav-status">
+                <span id="api-status-badge" class="status-badge status-loading">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="app-layout">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-pill-badge">
+                    <span class="sparkle-icon">✨</span> Portfolio Project • End-to-End Time-Series & BI
+                </div>
+                <h1 class="hero-heading">Enterprise Demand Forecasting &amp; Intelligence</h1>
+                <p class="hero-description">
+                    Empowering data-driven supply chain and commercial decisions through validated statistical forecasting, 
+                    empirical machine learning benchmarks, deterministic Python analytics, and a grounded Gemini AI analyst.
+                </p>
+                <div class="hero-meta-badges">
+                    <div class="meta-pill"><span class="meta-icon">🏆</span> <strong>Champion:</strong> Holt-Winters (MAE 39.02)</div>
+                    <div class="meta-pill"><span class="meta-icon">📈</span> <strong>2018 Forecast:</strong> +30.97% YoY Volume</div>
+                    <div class="meta-pill"><span class="meta-icon">🛡️</span> <strong>AI Grounding:</strong> Deterministic Context</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1. Executive KPI Overview -->
+        <section id="overview" class="section-block">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Executive Performance Overview</h2>
+                    <p class="section-subtitle">Aggregated historical baseline from 208 complete weeks of transaction history (2014–2017)</p>
+                </div>
+                <span class="date-badge">2014-01-06 → 2017-12-25</span>
+            </div>
+
+            <div class="kpi-cards-grid">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title">Total Demand Sold</span>
+                        <div class="kpi-icon-wrapper kpi-icon-blue">📦</div>
+                    </div>
+                    <div class="kpi-value-row">
+                        <span class="kpi-number" id="kpi-quantity">--</span>
+                    </div>
+                    <div class="kpi-subtext">37,873 total units across 208 weeks</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title">Gross Revenue</span>
+                        <div class="kpi-icon-wrapper kpi-icon-indigo">💵</div>
+                    </div>
+                    <div class="kpi-value-row">
+                        <span class="kpi-number" id="kpi-sales">--</span>
+                    </div>
+                    <div class="kpi-subtext">$2.30M cumulative sales revenue</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title">Cumulative Net Profit</span>
+                        <div class="kpi-icon-wrapper kpi-icon-green">📈</div>
+                    </div>
+                    <div class="kpi-value-row">
+                        <span class="kpi-number" id="kpi-profit">--</span>
+                    </div>
+                    <div class="kpi-subtext">12.47% overall commercial margin</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title">Profit Margin</span>
+                        <div class="kpi-icon-wrapper kpi-icon-emerald">🎯</div>
+                    </div>
+                    <div class="kpi-value-row">
+                        <span class="kpi-number" id="kpi-margin">--</span>
+                    </div>
+                    <div class="kpi-subtext">Profitability efficiency ratio</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title">Average Order Value</span>
+                        <div class="kpi-icon-wrapper kpi-icon-amber">🛒</div>
+                    </div>
+                    <div class="kpi-value-row">
+                        <span class="kpi-number" id="kpi-aov">--</span>
+                    </div>
+                    <div class="kpi-subtext">Across 5,009 unique customer orders</div>
+                </div>
+            </div>
+
+            <!-- Dynamic Business Insight Cards -->
+            <div class="insights-grid" id="insights-container">
+                <!-- Injected dynamically from deterministic API data -->
+            </div>
+        </section>
+
+        <!-- 2. Forward Production Forecast Section -->
+        <section id="forecast" class="section-block">
+            <div class="section-header">
+                <div>
+                    <div class="title-with-badge">
+                        <h2 class="section-title">Forward Demand Forecast</h2>
+                        <span class="badge-live-prod">2018 Production Series</span>
+                    </div>
+                    <p class="section-subtitle">Continuous 52-week ahead projection generated by the champion Holt-Winters model with 95% analytical prediction intervals.</p>
+                </div>
+                <div class="forecast-meta-pills">
+                    <span class="meta-tag">Origin: <strong>2017-12-25</strong></span>
+                    <span class="meta-tag">First Future Week: <strong>2018-01-01</strong></span>
+                    <span class="meta-tag highlight-tag">Peak: <strong>2018-11-26 (528.8 u)</strong></span>
+                </div>
+            </div>
+
+            <!-- Horizon Segmented Switcher & Summary Cards -->
+            <div class="forecast-topbar">
+                <div class="horizon-switch-wrapper">
+                    <span class="switch-label">Planning Horizon:</span>
+                    <div class="segmented-control">
+                        <button class="seg-btn" data-horizon="4">4 Weeks</button>
+                        <button class="seg-btn" data-horizon="8">8 Weeks</button>
+                        <button class="seg-btn" data-horizon="12">12 Weeks (Q1)</button>
+                        <button class="seg-btn active" data-horizon="52">Full 52 Weeks</button>
+                    </div>
+                </div>
+
+                <div class="forecast-quick-stats">
+                    <div class="f-stat-item">
+                        <span class="f-stat-label">Next 1W (2018-01-01)</span>
+                        <span class="f-stat-value" id="fstat-1w">169.0 u</span>
+                        <span class="f-stat-sub" id="fstat-1w-sub">-11.1% vs prev wk</span>
+                    </div>
+                    <div class="f-stat-item">
+                        <span class="f-stat-label">Next 4W Total</span>
+                        <span class="f-stat-value" id="fstat-4w">747.7 u</span>
+                        <span class="f-stat-sub" id="fstat-4w-sub">-13.4% vs prior 4w</span>
+                    </div>
+                    <div class="f-stat-item">
+                        <span class="f-stat-label">Next 12W (Q1 Total)</span>
+                        <span class="f-stat-value" id="fstat-12w">2,504.2 u</span>
+                        <span class="f-stat-sub" id="fstat-12w-sub">-37.9% vs Q4 volume</span>
+                    </div>
+                    <div class="f-stat-item f-stat-primary">
+                        <span class="f-stat-label">Full 2018 Projected Total</span>
+                        <span class="f-stat-value" id="fstat-52w">16,266.8 u</span>
+                        <span class="f-stat-sub" id="fstat-52w-sub">+30.97% YoY vs 2017</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forecast Line Chart Card -->
+            <div class="card chart-card">
+                <div class="card-header-inner">
+                    <div class="chart-legend-custom">
+                        <span class="legend-item"><span class="legend-dot dot-forecast"></span> <strong>Holt-Winters Forward Projection</strong></span>
+                        <span class="legend-item"><span class="legend-dot dot-interval"></span> <strong>95% Prediction Interval Bounds</strong></span>
+                    </div>
+                    <span class="chart-caption">Weekly Quantity (Monday-Aligned)</span>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="forecastChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Business Performance Section -->
+        <section id="performance" class="section-block">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Commercial &amp; Regional Performance</h2>
+                    <p class="section-subtitle">Visual distribution and profit margin efficiency across product categories and geographical regions</p>
+                </div>
+            </div>
+
+            <div class="performance-grid">
+                <!-- Category Performance Card -->
+                <div class="card">
+                    <div class="card-header-inner">
+                        <h3 class="card-title">Category Revenue &amp; Volume Dynamics</h3>
+                        <span class="card-tag">3 Core Categories</span>
+                    </div>
+                    
+                    <div class="mini-chart-box">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="styled-table" id="category-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Volume Sold</th>
+                                    <th>Sales Revenue</th>
+                                    <th>Profit Margin</th>
+                                    <th>Volume Share</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="5" class="text-center text-muted">Loading category metrics...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Regional Distribution Card -->
+                <div class="card">
+                    <div class="card-header-inner">
+                        <h3 class="card-title">Regional Demand &amp; Profitability</h3>
+                        <span class="card-tag">4 US Regions</span>
+                    </div>
+
+                    <div class="mini-chart-box">
+                        <canvas id="regionalChart"></canvas>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="styled-table" id="regional-table">
+                            <thead>
+                                <tr>
+                                    <th>Region</th>
+                                    <th>Demand Units</th>
+                                    <th>Total Sales</th>
+                                    <th>Net Profit</th>
+                                    <th>Volume Share</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="5" class="text-center text-muted">Loading regional metrics...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Model Benchmarks Section -->
+        <section id="models" class="section-block">
+            <div class="section-header">
+                <div>
+                    <div class="title-with-badge">
+                        <h2 class="section-title">Forecasting Model Benchmarks</h2>
+                        <span class="badge-eval">2017 Out-of-Sample Holdout (52 Weeks)</span>
+                    </div>
+                    <p class="section-subtitle">Rigorous chronological evaluation of 12 candidate forecasting architectures without temporal data leakage</p>
+                </div>
+            </div>
+
+            <!-- Champion Model Showcase Card -->
+            <div class="champion-banner-card">
+                <div class="champion-badge-pill">
+                    <span class="crown-icon">👑</span> <strong>EVALUATION CHAMPION</strong>
+                </div>
+                <div class="champion-body">
+                    <div class="champion-info">
+                        <h3 class="champion-name">Holt-Winters Exponential Smoothing</h3>
+                        <p class="champion-params">Configuration: Additive Multi-Year Trend + Additive 52-Week Annual Seasonality (\(s=52\))</p>
+                        <p class="champion-context">
+                            Outperformed classical SARIMA and tree-based machine learning ensembles by accurately extrapolating multi-year volume expansion and capturing peak holiday seasonality.
+                        </p>
+                    </div>
+                    <div class="champion-metrics-grid">
+                        <div class="c-metric-box">
+                            <span class="c-metric-val">39.02</span>
+                            <span class="c-metric-lbl">Holdout MAE (Units)</span>
+                        </div>
+                        <div class="c-metric-box">
+                            <span class="c-metric-val">52.40</span>
+                            <span class="c-metric-lbl">Holdout RMSE (Units)</span>
+                        </div>
+                        <div class="c-metric-box">
+                            <span class="c-metric-val">19.24%</span>
+                            <span class="c-metric-lbl">Holdout MAPE</span>
+                        </div>
+                        <div class="c-metric-box">
+                            <span class="c-metric-val">+3.76</span>
+                            <span class="c-metric-lbl">Holdout Bias (ME)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Benchmark Table -->
+            <div class="card">
+                <div class="card-header-inner">
+                    <h3 class="card-title">Comprehensive Model Comparison Matrix</h3>
+                    <span class="card-tag">Chronological 2017 Holdout</span>
+                </div>
+                <div class="table-container">
+                    <table class="styled-table" id="models-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Model Architecture</th>
+                                <th>Family</th>
+                                <th>MAE (Units)</th>
+                                <th>RMSE (Units)</th>
+                                <th>MAPE (%)</th>
+                                <th>sMAPE (%)</th>
+                                <th>Bias (ME)</th>
+                                <th>Evaluation Outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="9" class="text-center text-muted">Loading benchmark matrix...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. AI Business Analyst Section (Dedicated Hero Experience) -->
+        <section id="analyst" class="section-block analyst-container">
+            <div class="analyst-glass-card">
+                <div class="analyst-header">
+                    <div class="analyst-avatar">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a8 8 0 0 0-8 8c0 3.36 2.07 6.24 5 7.42V20a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2.58c2.93-1.18 5-4.06 5-7.42a8 8 0 0 0-8-8z"></path>
+                            <line x1="9.5" y1="9" x2="9.5" y2="9"></line>
+                            <line x1="14.5" y1="9" x2="14.5" y2="9"></line>
+                            <path d="M9.5 13a3.5 3.5 0 0 0 5 0"></path>
+                        </svg>
+                    </div>
+                    <div class="analyst-heading-group">
+                        <div class="title-with-badge">
+                            <h2 class="analyst-title">Grounded AI Business Analyst</h2>
+                            <span class="badge-grounded">Zero-Hallucination Grounding</span>
+                        </div>
+                        <p class="analyst-desc">
+                            Ask executive business questions. Answers are interpreted strictly from verified deterministic Python analytics without fabricated numbers or hallucinated metrics.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Prompt Suggestion Chips -->
+                <div class="prompt-chips-wrapper">
+                    <span class="chips-title">Suggested Strategic Questions:</span>
+                    <div class="chips-row">
+                        <button class="chip" data-query="What is expected to happen to demand next year and how does it compare with 2017?">📈 2018 Forecast vs 2017</button>
+                        <button class="chip" data-query="Which category generates the most sales and how do profit margins compare?">💼 Category Profitability</button>
+                        <button class="chip" data-query="How accurate is the forecasting model based on historical evaluation?">🎯 Model Evaluation Accuracy</button>
+                        <button class="chip" data-query="Where is customer demand strongest across regions?">🗺️ Regional Distribution</button>
+                        <button class="chip" data-query="Were there unusual demand weeks and what were the largest anomalies?">⚠️ Historical Demand Anomalies</button>
+                    </div>
+                </div>
+
+                <!-- Input Box Form -->
+                <form id="analyst-form" class="analyst-form">
+                    <div class="input-with-button">
+                        <input type="text" id="analyst-query-input" placeholder="Ask about demand forecasts, profitability, model accuracy, or anomalies..." required minlength="3" maxlength="1000" autocomplete="off">
+                        <button type="submit" id="btn-submit-query" class="btn-analyst">
+                            <span class="btn-text">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                </svg>
+                                Ask Analyst
+                            </span>
+                            <span class="btn-spinner" style="display: none;">
+                                <span class="spinner-circle"></span> Processing...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- AI Response Card -->
+                <div id="analyst-response-card" class="response-card" style="display: none;">
+                    <div class="response-header">
+                        <div class="response-meta-left">
+                            <span class="badge-answer-ok">✓ Grounded Interpretation</span>
+                            <span class="meta-divider">•</span>
+                            <span id="response-model-tag" class="response-model-text">gemini-3.6-flash</span>
+                        </div>
+                        <span id="response-latency-tag" class="response-latency-badge">Latency: 0.0s</span>
+                    </div>
+
+                    <div class="response-content" id="response-content">
+                        <!-- Rendered text / markdown -->
+                    </div>
+
+                    <div class="response-footer" id="response-caveat-box" style="display: none;">
+                        <span class="caveat-badge">Analytical Caveat</span>
+                        <span id="response-caveat-text" class="caveat-text"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-container">
+                <div class="footer-left">
+                    <strong>DemandIQ</strong> — AI-Powered Customer Demand Forecasting &amp; Business Intelligence Platform
+                </div>
+                <div class="footer-right">
+                    <span>Python Deterministic Analytics</span> • <span>FastAPI Backend</span> • <span>Google Gemini LLM</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Application Script -->
+    <script src="/static/app.js"></script>
+</body>
+</html>
