@@ -222,20 +222,28 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!res.ok) throw new Error("Failed to load forecast");
         const fData = await res.json();
 
-        // Update Quick Stat Cards if available
+        // Update Quick Stat Cards with exact authoritative API values and comparison baselines
         if (cachedDashboard && cachedDashboard.forward_forecast_summary) {
             const h = cachedDashboard.forward_forecast_summary.horizons;
             if (h && h.next_1_week) {
                 document.getElementById("fstat-1w").textContent = h.next_1_week.total_forecast_quantity.toFixed(1) + " u";
+                const p1 = h.next_1_week.pct_change_vs_prior_period;
+                document.getElementById("fstat-1w-sub").textContent = `${p1 >= 0 ? '+' : ''}${p1.toFixed(2)}% vs preceding week`;
             }
             if (h && h.next_4_weeks) {
                 document.getElementById("fstat-4w").textContent = h.next_4_weeks.total_forecast_quantity.toFixed(1) + " u";
+                const p4 = h.next_4_weeks.pct_change_vs_prior_period;
+                document.getElementById("fstat-4w-sub").textContent = `${p4 >= 0 ? '+' : ''}${p4.toFixed(2)}% vs preceding 4w`;
             }
             if (h && h.next_12_weeks) {
                 document.getElementById("fstat-12w").textContent = Number(h.next_12_weeks.total_forecast_quantity).toLocaleString(undefined, { maximumFractionDigits: 1 }) + " u";
+                const p12 = h.next_12_weeks.pct_change_vs_prior_period;
+                document.getElementById("fstat-12w-sub").textContent = `${p12 >= 0 ? '+' : ''}${p12.toFixed(2)}% vs preceding 12w`;
             }
             if (h && h.full_52_weeks) {
                 document.getElementById("fstat-52w").textContent = Number(h.full_52_weeks.total_forecast_quantity).toLocaleString(undefined, { maximumFractionDigits: 1 }) + " u";
+                const p52 = h.full_52_weeks.pct_change_vs_prior_period;
+                document.getElementById("fstat-52w-sub").textContent = `${p52 >= 0 ? '+' : ''}${p52.toFixed(2)}% YoY vs 2017 actuals`;
             }
         }
 
@@ -302,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         padding: 12,
                         cornerRadius: 8,
                         callbacks: {
-                            label: function(c) {
+                            label: function (c) {
                                 return ` ${c.dataset.label}: ${Number(c.raw).toFixed(1)} units`;
                             }
                         }
