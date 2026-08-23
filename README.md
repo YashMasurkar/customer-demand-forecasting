@@ -14,6 +14,16 @@ A production-grade Data Science, Time-Series Forecasting, and Business Intellige
 
 ---
 
+## 📊 Dataset Information
+
+- **Dataset**: Sample Superstore Dataset
+- **Exact Source**: Tableau Sample Data (mirrored publicly at `https://raw.githubusercontent.com/suyog2001/Tableau_Superstore_Sales_Dashboard/main/Sample%20-%20Superstore.csv`)
+- **Raw File Stored**: [`data/raw/Sample_Superstore.csv`](file:///e:/projects/customer-demand-forecasting/data/raw/Sample_Superstore.csv) (2,287,806 bytes)
+- **Source Notes**: Standard public demonstration dataset provided by Tableau for business intelligence, time-series, and analytics education.
+- **Granularity & Dimensions**: 9,994 transaction rows, 21 columns, covering 2014-01-03 to 2017-12-30.
+
+---
+
 ## 📁 Repository Structure
 
 ```
